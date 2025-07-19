@@ -1,53 +1,80 @@
+import os
 import requests
 from bs4 import BeautifulSoup
-import datetime
-import os
+from datetime import datetime
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
+import json
+import time
 
-SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
+# --- Configuration ---
+USER_LOCATION = (-34.918, 138.526)  # Lockleys, SA (change to your location)
+CACHE_FILE = "geocode_cache.json"
+WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK")
+URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
 
-# Today's date in DD/MM/YYYY format matching data-value attribute
-today = datetime.datetime.now().strftime("%d/%m/%Y")  # e.g. "19/07/2025"
+# --- Load or initialize geocoding cache ---
+if os.path.exists(CACHE_FILE):
+    with open(CACHE_FILE, "r") as f:
+        geocode_cache = json.load(f)
+else:
+    geocode_cache = {}
 
-def get_metropolitan_today():
-    res = requests.get(SAPOL_URL)
-    if res.status_code != 200:
-        print(f"Failed to fetch page, status code: {res.status_code}")
-        return []
+# --- Setup geopy geocoder ---
+geolocator = Nominatim(user_agent="sapol_cam_locator")
 
-    soup = BeautifulSoup(res.text, "html.parser")
-
-    # Find the <ul> with class "metrolist4" (Metropolitan cameras)
-    ul = soup.find("ul", class_="metrolist4")
-    if not ul:
-        print("Could not find metropolitan camera list.")
-        return []
-
-    # Filter <li> with data-value == today's date
-    cameras = [
-        li.get_text(strip=True)
-        for li in ul.find_all("li", class_="showlist")
-        if li.get("data-value") == today
-    ]
-
-    return cameras
-
-def send_to_discord(cameras):
-    webhook = os.getenv("DISCORD_WEBHOOK")
-    if not webhook:
-        print("Missing DISCORD_WEBHOOK environment variable.")
-        return
-
-    if cameras:
-        message = f"**Metropolitan speed cameras for {today}:**\n" + "\n".join(f"• {cam}" for cam in cameras)
+def get_distance(address):
+    if address in geocode_cache:
+        coords = geocode_cache[address]
     else:
-        message = f"No metropolitan cameras found for {today}."
+        try:
+            location = geolocator.geocode(address + ", South Australia", timeout=10)
+            if location:
+                coords = (location.latitude, location.longitude)
+                geocode_cache[address] = coords
+                with open(CACHE_FILE, "w") as f:
+                    json.dump(geocode_cache, f, indent=2)
+                time.sleep(1)  # Be polite to the server
+            else:
+                return float("inf")
+        except:
+            return float("inf")
+    return geodesic(USER_LOCATION, coords).km
 
-    response = requests.post(webhook, json={"content": message})
-    if response.status_code != 204:
-        print(f"Failed to send message to Discord. Status code: {response.status_code}")
-    else:
-        print("Message sent successfully.")
+# --- Fetch and parse camera list ---
+response = requests.get(URL)
+soup = BeautifulSoup(response.content, "html.parser")
 
-if __name__ == "__main__":
-    cameras = get_metropolitan_today()
-    send_to_discord(cameras)
+today = datetime.now().strftime("%A, %d %B %Y")
+header = soup.find("h4", string=today)
+
+if not header:
+    print(f"No header found for {today}")
+    exit()
+
+ul = header.find_next("ul", class_="metrolist4")
+if not ul:
+    print("Could not find metropolitan camera list.")
+    exit()
+
+metro_locations = [li.get_text(strip=True) for li in ul.find_all("li") if li.get("data-value") == datetime.now().strftime("%d/%m/%Y")]
+
+if not metro_locations:
+    print(f"No metropolitan cameras found for {today}.")
+    exit()
+
+# --- Sort by distance ---
+sorted_locations = sorted(metro_locations, key=get_distance)
+
+# --- Format message ---
+message = f"**SA Police Speed Cameras for {today}**\n"
+for loc in sorted_locations:
+    message += f"- {loc}\n"
+
+print(message)
+
+# --- Send to Discord ---
+if WEBHOOK_URL:
+    requests.post(WEBHOOK_URL, json={"content": message})
+else:
+    print("DISCORD_WEBHOOK environment variable not set.")
