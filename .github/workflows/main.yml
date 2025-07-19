@@ -1,0 +1,29 @@
+name: SAPOL Speed Camera Notifier
+
+on:
+  schedule:
+    # Runs every day at 3:00 AM ACST (UTC+9:30)
+    - cron: '30 17 * * *'  # 17:30 UTC = 3:00 AM ACST
+  workflow_dispatch:  # manual trigger from Actions tab
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run speed camera notifier
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: python send_speed_cameras.py
