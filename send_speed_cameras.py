@@ -1,28 +1,45 @@
-import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK")
-URL = "https://www.police.sa.gov.au/online-services/speed-camera-locations"
+def fetch_speed_cameras():
+    url = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"  # Use the actual URL
 
-today = datetime.now().strftime("%d/%m/%Y")
-print(f"Fetching cameras for: {today}")
+    # Fetch page content
+    response = requests.get(url)
+    if response.status_code != 200:
+        print(f"Failed to fetch page, status code {response.status_code}")
+        return
 
-response = requests.get(URL)
-soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(response.text, "html.parser")
 
-camera_list = soup.select(f'ul.metrolist4 li.showlist[data-value="{today}"]')
+    # Format date to match site header exactly
+    today = datetime.now().strftime("%A, %B %d, %Y")
+    print(f"Looking for header: {today}")
 
-if not camera_list:
-    print(f"No metropolitan cameras found for {today}")
-    exit()
+    # Find all headers with the accordion class
+    headers = soup.find_all("div", class_="accordion accordion-open")
 
-locations = [li.text.strip() for li in camera_list]
-message = "**SAPOL Metropolitan Speed Cameras for Today:**\n" + "\n".join(f"- {loc}" for loc in locations)
+    # Find the header matching today's date
+    header = None
+    for h in headers:
+        if h.text.strip() == today:
+            header = h
+            break
 
-res = requests.post(WEBHOOK_URL, json={"content": message})
-if res.status_code == 204:
-    print("✅ Message sent to Discord.")
-else:
-    print(f"❌ Failed to send. Status: {res.status_code} Response: {res.text}")
+    if header is None:
+        print(f"No header found for {today}")
+        return
+
+    # Assuming the camera info is in the next sibling div or element after header
+    camera_info = header.find_next_sibling()
+    if camera_info is None:
+        print("No camera info found after header.")
+        return
+
+    # Print the text content for debugging
+    print("Speed camera info for today:")
+    print(camera_info.get_text(separator="\n").strip())
+
+if __name__ == "__main__":
+    fetch_speed_cameras()
