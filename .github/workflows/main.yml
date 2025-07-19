@@ -1,29 +1,29 @@
-name: SAPOL Speed Camera Notifier
+name: Send SAPOL Speed Camera Locations
 
 on:
   schedule:
-    # Runs every day at 3:00 AM ACST (UTC+9:30) '30 17 * * *'
-    - cron: '15 17 * * *'  # 3:15 AM ACST, gives buffer for 3:00 AM delivery
-  workflow_dispatch:  # manual trigger from Actions tab
+    - cron: '15 17 * * *'  # 2:45am Adelaide Time
+  workflow_dispatch:       # allows manual run from GitHub UI
 
 jobs:
-  notify:
+  run-script:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4
+          pip install requests beautifulsoup4 geopy
 
-      - name: Run speed camera notifier
+      - name: Run script
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: python send_speed_cameras.py
+        run: python script.py
