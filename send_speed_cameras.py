@@ -13,6 +13,8 @@ CACHE_FILE = "geocode_cache.json"
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK")
 URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
 
+print(f"Using webhook: {WEBHOOK_URL}")
+
 # --- Load or initialize geocoding cache ---
 if os.path.exists(CACHE_FILE):
     with open(CACHE_FILE, "r") as f:
