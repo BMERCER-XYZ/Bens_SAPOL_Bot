@@ -2,8 +2,8 @@ name: SAPOL Speed Camera Notifier
 
 on:
   schedule:
-    # Runs every day at 3:00 AM ACST (UTC+9:30)
-    - cron: '30 17 * * *'  # 17:30 UTC = 3:00 AM ACST
+    # Runs every day at 3:00 AM ACST (UTC+9:30) '30 17 * * *'
+    - cron: '0 10 * * *'  # 10:00 UTC = 7:30 PM ACST
   workflow_dispatch:  # manual trigger from Actions tab
 
 jobs:
