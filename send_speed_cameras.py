@@ -1,45 +1,53 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+import datetime
+import os
 
-def fetch_speed_cameras():
-    url = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"  # Use the actual URL
+SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
 
-    # Fetch page content
-    response = requests.get(url)
-    if response.status_code != 200:
-        print(f"Failed to fetch page, status code {response.status_code}")
+# Today's date in DD/MM/YYYY format matching data-value attribute
+today = datetime.datetime.now().strftime("%d/%m/%Y")  # e.g. "19/07/2025"
+
+def get_metropolitan_today():
+    res = requests.get(SAPOL_URL)
+    if res.status_code != 200:
+        print(f"Failed to fetch page, status code: {res.status_code}")
+        return []
+
+    soup = BeautifulSoup(res.text, "html.parser")
+
+    # Find the <ul> with class "metrolist4" (Metropolitan cameras)
+    ul = soup.find("ul", class_="metrolist4")
+    if not ul:
+        print("Could not find metropolitan camera list.")
+        return []
+
+    # Filter <li> with data-value == today's date
+    cameras = [
+        li.get_text(strip=True)
+        for li in ul.find_all("li", class_="showlist")
+        if li.get("data-value") == today
+    ]
+
+    return cameras
+
+def send_to_discord(cameras):
+    webhook = os.getenv("DISCORD_WEBHOOK")
+    if not webhook:
+        print("Missing DISCORD_WEBHOOK environment variable.")
         return
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    if cameras:
+        message = f"**Metropolitan speed cameras for {today}:**\n" + "\n".join(f"• {cam}" for cam in cameras)
+    else:
+        message = f"No metropolitan cameras found for {today}."
 
-    # Format date to match site header exactly
-    today = datetime.now().strftime("%A, %B %d, %Y")
-    print(f"Looking for header: {today}")
-
-    # Find all headers with the accordion class
-    headers = soup.find_all("div", class_="accordion accordion-open")
-
-    # Find the header matching today's date
-    header = None
-    for h in headers:
-        if h.text.strip() == today:
-            header = h
-            break
-
-    if header is None:
-        print(f"No header found for {today}")
-        return
-
-    # Assuming the camera info is in the next sibling div or element after header
-    camera_info = header.find_next_sibling()
-    if camera_info is None:
-        print("No camera info found after header.")
-        return
-
-    # Print the text content for debugging
-    print("Speed camera info for today:")
-    print(camera_info.get_text(separator="\n").strip())
+    response = requests.post(webhook, json={"content": message})
+    if response.status_code != 204:
+        print(f"Failed to send message to Discord. Status code: {response.status_code}")
+    else:
+        print("Message sent successfully.")
 
 if __name__ == "__main__":
-    fetch_speed_cameras()
+    cameras = get_metropolitan_today()
+    send_to_discord(cameras) #yeah
