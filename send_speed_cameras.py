@@ -50,4 +50,4 @@ def send_to_discord(cameras):
 
 if __name__ == "__main__":
     cameras = get_metropolitan_today()
-    send_to_discord(cameras) #yeah
+    send_to_discord(cameras)
