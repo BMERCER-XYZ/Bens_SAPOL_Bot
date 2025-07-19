@@ -1,83 +1,89 @@
 import requests
 from bs4 import BeautifulSoup
-from geopy.distance import geodesic
-from geopy.geocoders import Nominatim
 import datetime
 import os
-import time
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
+import re
 
-# Set your location (example: Lockleys, SA)
-user_location = (-34.9206, 138.5210)
+# Your fixed location (Lockleys SA as example)
+HOME_SUBURB = "Lockleys, South Australia"
+FAVORITE_SUBURBS = {"lockleys", "brooklyn park", "findon", "henley beach", "mile end", "fulham", "fulham gardens", "west beach", "seaton", "grange", "torrensville", "underdale", "woodville", "woodville south", "woodville west", "adelaide"}
 
 SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
-today = datetime.datetime.now().strftime("%d/%m/%Y")  # e.g. "19/07/2025"
+today = datetime.datetime.now().strftime("%d/%m/%Y")
+
+geolocator = Nominatim(user_agent="sapol_bot")
+home_coords = geolocator.geocode(HOME_SUBURB)
+if not home_coords:
+    raise ValueError(f"Could not locate your home suburb: {HOME_SUBURB}")
 
 def get_metropolitan_today():
-    print(f"📅 Fetching cameras for: {today}")
     res = requests.get(SAPOL_URL)
     if res.status_code != 200:
-        print(f"❌ Failed to fetch page, status code: {res.status_code}")
+        print(f"Failed to fetch page, status code: {res.status_code}")
         return []
 
     soup = BeautifulSoup(res.text, "html.parser")
     ul = soup.find("ul", class_="metrolist4")
     if not ul:
-        print("❌ Could not find metropolitan camera list.")
+        print("Could not find metropolitan camera list.")
         return []
 
-    raw_cameras = [
-        li.get_text(strip=True)
-        for li in ul.find_all("li", class_="showlist")
-        if li.get("data-value") == today
-    ]
+    cameras = []
+    for li in ul.find_all("li", class_="showlist"):
+        if li.get("data-value") == today:
+            cameras.append(li.get_text(strip=True))
 
-    if not raw_cameras:
-        print("❌ No metropolitan cameras found for today.")
-        return []
+    return cameras
 
-    geolocator = Nominatim(user_agent="sapol_bot")
-    camera_list = []
+def extract_suburb(camera_text):
+    match = re.search(r"\b([A-Z][a-z]+(?: [A-Z][a-z]+)?)\b", camera_text)
+    return match.group(1) if match else None
 
-    for cam in raw_cameras:
+def sort_and_annotate_cameras(cameras):
+    sorted_list = []
+    for cam in cameras:
+        suburb = extract_suburb(cam)
+        if not suburb:
+            continue
         try:
-            location = geolocator.geocode(f"{cam}, South Australia", timeout=10)
-            if location:
-                cam_coords = (location.latitude, location.longitude)
-                distance_km = geodesic(user_location, cam_coords).km
-                camera_list.append((cam, distance_km))
-            else:
-                camera_list.append((cam, None))
+            loc = geolocator.geocode(f"{suburb}, South Australia")
+            if not loc:
+                continue
+            cam_coords = (loc.latitude, loc.longitude)
+            dist_km = geodesic((home_coords.latitude, home_coords.longitude), cam_coords).km
+            is_fav = suburb.lower() in FAVORITE_SUBURBS
+            sorted_list.append((cam, dist_km, is_fav))
         except Exception as e:
-            print(f"⚠️ Geocoding failed for {cam}: {e}")
-            camera_list.append((cam, None))
-        time.sleep(1)  # Respect Nominatim rate limit
+            print(f"Error geocoding suburb '{suburb}': {e}")
+            continue
 
-    # Sort by distance (Unknowns last)
-    camera_list.sort(key=lambda x: x[1] if x[1] is not None else float("inf"))
-    return camera_list
+    return sorted(sorted_list, key=lambda x: x[1])
 
-def send_to_discord(cameras):
+def send_to_discord(sorted_cameras):
     webhook = os.getenv("DISCORD_WEBHOOK")
     if not webhook:
-        print("❌ Missing DISCORD_WEBHOOK environment variable.")
+        print("Missing DISCORD_WEBHOOK environment variable.")
         return
 
-    if cameras:
-        message = f"📸 **Metropolitan speed cameras for {today}:**\n"
-        for cam, dist in cameras:
-            if dist is not None:
-                message += f"• {cam} — `{dist:.1f} km`\n"
-            else:
-                message += f"• {cam} — `distance unknown`\n"
-    else:
+    if not sorted_cameras:
         message = f"No metropolitan cameras found for {today}."
+    else:
+        lines = []
+        for cam, dist_km, is_fav in sorted_cameras:
+            highlight = ">" if is_fav else ""
+            lines.append(f"{highlight}• {cam} — {dist_km:.1f} km")
+
+        message = f"**Metropolitan speed cameras for {today}:**\n" + "\n".join(lines)
 
     response = requests.post(webhook, json={"content": message})
     if response.status_code != 204:
-        print(f"❌ Failed to send message to Discord. Status code: {response.status_code}")
+        print(f"Failed to send message to Discord. Status code: {response.status_code}")
     else:
-        print("✅ Message sent successfully.")
+        print("Message sent successfully.")
 
 if __name__ == "__main__":
     cameras = get_metropolitan_today()
-    send_to_discord(cameras)
+    sorted_cameras = sort_and_annotate_cameras(cameras)
+    send_to_discord(sorted_cameras)
