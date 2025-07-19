@@ -1,8 +1,9 @@
-name: Send Speed Cameras to Discord
+name: Send SAPOL Cameras to Discord
 
 on:
   schedule:
-    - cron: '30 21 * * *'  # Runs at 7:30 PM Adelaide time (which is 9:00 UTC in winter)
+    # Runs daily at 17:30 UTC (3:00 AM Adelaide time, UTC+9:30)
+    - cron: "30 17 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -19,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install -r requirements.txt
 
       - name: Run script
         env:
