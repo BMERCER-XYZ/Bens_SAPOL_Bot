@@ -2,81 +2,38 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from geopy.geocoders import Nominatim
-from geopy.distance import geodesic
-import json
-import time
+from dotenv import load_dotenv
 
-# --- Configuration ---
-USER_LOCATION = (-34.918, 138.526)  # Lockleys, SA (change to your location)
-CACHE_FILE = "geocode_cache.json"
+load_dotenv()
+
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK")
-URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
+URL = "https://www.police.sa.gov.au/online-services/speed-camera-locations"
+
+# Get today's date in correct format (e.g. 19/07/2025)
+today = datetime.now().strftime("%d/%m/%Y")
 
 print(f"Using webhook: {WEBHOOK_URL}")
+print(f"Fetching data for: {today}")
 
-# --- Load or initialize geocoding cache ---
-if os.path.exists(CACHE_FILE):
-    with open(CACHE_FILE, "r") as f:
-        geocode_cache = json.load(f)
-else:
-    geocode_cache = {}
-
-# --- Setup geopy geocoder ---
-geolocator = Nominatim(user_agent="sapol_cam_locator")
-
-def get_distance(address):
-    if address in geocode_cache:
-        coords = geocode_cache[address]
-    else:
-        try:
-            location = geolocator.geocode(address + ", South Australia", timeout=10)
-            if location:
-                coords = (location.latitude, location.longitude)
-                geocode_cache[address] = coords
-                with open(CACHE_FILE, "w") as f:
-                    json.dump(geocode_cache, f, indent=2)
-                time.sleep(1)  # Be polite to the server
-            else:
-                return float("inf")
-        except:
-            return float("inf")
-    return geodesic(USER_LOCATION, coords).km
-
-# --- Fetch and parse camera list ---
+# Fetch and parse
 response = requests.get(URL)
-soup = BeautifulSoup(response.content, "html.parser")
+soup = BeautifulSoup(response.text, "html.parser")
 
-today = datetime.now().strftime("%A, %d %B %Y")
-header = soup.find("h4", string=today)
+# Find all <li> tags in the metrolist4 <ul> with the correct date
+camera_list = soup.select(f'ul.metrolist4 li.showlist[data-value="{today}"]')
 
-if not header:
-    print(f"No header found for {today}")
+if not camera_list:
+    print(f"No cameras found for {today}")
     exit()
 
-ul = header.find_next("ul", class_="metrolist4")
-if not ul:
-    print("Could not find metropolitan camera list.")
-    exit()
+# Prepare message
+locations = [li.text.strip() for li in camera_list]
+message = "**SAPOL Metropolitan Speed Cameras for Today:**\n" + "\n".join(f"- {loc}" for loc in locations)
 
-metro_locations = [li.get_text(strip=True) for li in ul.find_all("li") if li.get("data-value") == datetime.now().strftime("%d/%m/%Y")]
+# Send to Discord
+response = requests.post(WEBHOOK_URL, json={"content": message})
 
-if not metro_locations:
-    print(f"No metropolitan cameras found for {today}.")
-    exit()
-
-# --- Sort by distance ---
-sorted_locations = sorted(metro_locations, key=get_distance)
-
-# --- Format message ---
-message = f"**SA Police Speed Cameras for {today}**\n"
-for loc in sorted_locations:
-    message += f"- {loc}\n"
-
-print(message)
-
-# --- Send to Discord ---
-if WEBHOOK_URL:
-    requests.post(WEBHOOK_URL, json={"content": message})
+if response.status_code == 204:
+    print("✅ Successfully sent message to Discord.")
 else:
-    print("DISCORD_WEBHOOK environment variable not set.")
+    print(f"❌ Failed to send message. Status: {response.status_code} Response: {response.text}")
