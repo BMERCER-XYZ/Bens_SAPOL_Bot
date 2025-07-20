@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 import datetime
+import pytz
 import os
 import time
 
@@ -10,7 +11,10 @@ import time
 user_location = (-34.9206, 138.5210)
 
 SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
-today = datetime.datetime.now().strftime("%d/%m/%Y")  # e.g. "19/07/2025"
+
+# Set timezone to Adelaide
+tz = pytz.timezone("Australia/Adelaide")
+today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
 
 def get_metropolitan_today():
     print(f"📅 Fetching cameras for: {today}")
