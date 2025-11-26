@@ -7,6 +7,7 @@ import datetime
 import pytz
 import os
 import time
+from typing import Optional
 
 # Set your location (example: Lockleys, SA)
 user_location = (-34.9206, 138.5210)
@@ -17,6 +18,37 @@ SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera
 # Set timezone to Adelaide and get today’s date in DD/MM/YYYY format
 tz = pytz.timezone("Australia/Adelaide")
 today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
+
+
+def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
+    """Use Playwright to render the page and return HTML. Returns None on failure.
+
+    This is used as a fallback when direct requests are blocked (e.g., 403).
+    """
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        print("⚠️ Playwright is not installed. Install 'playwright' and run 'playwright install' to enable browser fallback.")
+        return None
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(user_agent=os.getenv("SAPOL_USER_AGENT", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"))
+            page = context.new_page()
+            page.set_default_navigation_timeout(timeout * 1000)
+            page.goto(url)
+            # Wait for some page content to load; adjust selector if the site uses dynamic loading
+            try:
+                page.wait_for_load_state("networkidle", timeout=5000)
+            except Exception:
+                pass
+            html = page.content()
+            browser.close()
+            return html
+    except Exception as e:
+        print(f"⚠️ Playwright fetch failed: {e}")
+        return None
 
 def get_metropolitan_today():
     # Fetch and parse SAPOL camera list for today's metropolitan locations
@@ -46,17 +78,25 @@ def get_metropolitan_today():
             print(f"⚠️ Fetch attempt {attempt} failed: {e}")
         time.sleep(attempt * 1.5)
 
-    # Check if the page loaded successfully
-    if not res:
-        print("❌ Failed to fetch page (no response).")
-        return []
-    if res.status_code != 200:
-        print(f"❌ Failed to fetch page, status code: {res.status_code}")
-        # Print some debugging info to help diagnose GitHub Action 403s
-        print("Response headers:", dict(res.headers))
-        snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
-        print("Page snippet:", snippet[:1000])
-        return []
+    # If we failed to fetch or got blocked (403), attempt a headless-browser fetch as a fallback.
+    if not res or res.status_code == 403:
+        print("🔁 Attempting headless-browser fetch fallback due to 403 or missing response...")
+        html = fetch_with_playwright(SAPOL_URL)
+        if html:
+            class DummyResp:
+                status_code = 200
+                text = html
+                headers = {}
+            res = DummyResp()
+        else:
+            if not res:
+                print("❌ Failed to fetch page (no response).")
+            else:
+                print(f"❌ Failed to fetch page, status code: {res.status_code}")
+                print("Response headers:", dict(res.headers))
+                snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
+                print("Page snippet:", snippet[:1000])
+            return []
 
     # Parse the HTML and extract the relevant camera list
     soup = BeautifulSoup(res.text, "html.parser")
