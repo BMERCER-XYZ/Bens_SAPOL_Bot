@@ -21,11 +21,41 @@ today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
 def get_metropolitan_today():
     # Fetch and parse SAPOL camera list for today's metropolitan locations
     print(f"📅 Fetching cameras for: {today}")
-    res = requests.get(SAPOL_URL)
-    
+
+    # Use a session with a browser-like User-Agent to avoid bot blocking (403)
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": os.getenv("SAPOL_USER_AGENT", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                           "Chrome/120.0.0.0 Safari/537.36"),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": "https://www.google.com/",
+    })
+
+    # Try a few times with backoff in case of transient blocks
+    res = None
+    for attempt in range(1, 4):
+        try:
+            res = session.get(SAPOL_URL, timeout=15)
+            if res.status_code == 200:
+                break
+            else:
+                print(f"⚠️ Fetch attempt {attempt} returned status {res.status_code}")
+        except requests.RequestException as e:
+            print(f"⚠️ Fetch attempt {attempt} failed: {e}")
+        time.sleep(attempt * 1.5)
+
     # Check if the page loaded successfully
+    if not res:
+        print("❌ Failed to fetch page (no response).")
+        return []
     if res.status_code != 200:
         print(f"❌ Failed to fetch page, status code: {res.status_code}")
+        # Print some debugging info to help diagnose GitHub Action 403s
+        print("Response headers:", dict(res.headers))
+        snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
+        print("Page snippet:", snippet[:1000])
         return []
 
     # Parse the HTML and extract the relevant camera list
