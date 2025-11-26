@@ -30,20 +30,52 @@ def get_metropolitan_today():
 
     # Parse the HTML and extract the relevant camera list
     soup = BeautifulSoup(res.text, "html.parser")
-    ul = soup.find("ul", class_="metrolist4")
-    if not ul:
-        print("❌ Could not find metropolitan camera list.")
-        return []
 
-    # Extract camera locations listed for today
-    raw_cameras = [
-        li.get_text(strip=True)
-        for li in ul.find_all("li", class_="showlist")
-        if li.get("data-value") == today
-    ]
+    # Try a few ways to locate camera entries because the site structure can change.
+    # Prepare common date formats we may encounter in attributes or text
+    iso_today = datetime.datetime.now(tz).strftime("%Y-%m-%d")
+    long_today = datetime.datetime.now(tz).strftime("%d %B %Y")
+    abbr_today = datetime.datetime.now(tz).strftime("%d %b %Y")
+    date_variants = {today, iso_today, long_today, abbr_today}
+
+    # 1) Directly search for elements that have data-value matching any date variant
+    matched = []
+    for dv in date_variants:
+        matched.extend(soup.find_all(attrs={"data-value": dv}))
+
+    # 2) If no data-value matches, look for list items that mention the date in their text
+    if not matched:
+        for li in soup.find_all("li"):
+            text = li.get_text(" ", strip=True)
+            if any(dv in text for dv in date_variants):
+                matched.append(li)
+
+    # 3) As a fallback, try to find any lists that look like camera lists (by class name hints)
+    if not matched:
+        possible_uls = []
+        for cls in ("metrolist4", "metro-list", "camera-list", "showlist"):
+            possible_uls.extend(soup.find_all("ul", class_=cls))
+        for ul in possible_uls:
+            for li in ul.find_all("li"):
+                matched.append(li)
+
+    # Extract camera location names from matched items
+    raw_cameras = []
+    for el in matched:
+        # If the matched element is an li or contains an li, prefer the li text
+        li = el if getattr(el, "name", None) == "li" else el.find_parent("li") or el
+        cam_text = li.get_text(" ", strip=True)
+        # Try to remove the date portion from the string if present (common formats)
+        for dv in date_variants:
+            cam_text = cam_text.replace(dv, "").strip()
+        if cam_text:
+            raw_cameras.append(cam_text)
 
     if not raw_cameras:
-        print("❌ No metropolitan cameras found for today.")
+        print(f"❌ No metropolitan cameras found for {today}.")
+        # For debugging, print a short snippet of the page where we expected the list
+        snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
+        print("Page snippet:", snippet[:1000])
         return []
 
     # Geocode each camera location and calculate distance from user's location
