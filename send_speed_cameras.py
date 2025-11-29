@@ -8,7 +8,9 @@ import datetime
 import pytz
 import os
 import time
-from typing import Optional
+import folium
+import tempfile
+from typing import Optional, List, Dict, Any
 
 # Set your location (example: Lockleys, SA)
 user_location = (-34.9206, 138.5210)
@@ -52,6 +54,62 @@ def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
             return html
     except Exception as e:
         print(f"⚠️ Playwright fetch failed: {e}")
+        return None
+
+def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
+    """Generates a static map image of camera locations using Folium and Playwright."""
+    if not cameras:
+        return None
+
+    print("🗺️ Generating map preview...")
+    try:
+        # Center map on Adelaide
+        m = folium.Map(location=ADELAIDE_CBD_COORDS, zoom_start=11, tiles="CartoDB positron")
+
+        # Add markers for each camera
+        cameras_with_loc = [c for c in cameras if c.get('lat') is not None]
+        if not cameras_with_loc:
+            return None
+            
+        for cam in cameras_with_loc:
+            # Draw a circle to represent the area
+            folium.Circle(
+                location=[cam['lat'], cam['lon']],
+                radius=400,  # 400 meters radius
+                color="#FF3333",
+                fill=True,
+                fill_color="#FF3333",
+                fill_opacity=0.4,
+                tooltip=cam['name']
+            ).add_to(m)
+        
+        # Save map to a temporary HTML file
+        with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode='w', encoding='utf-8') as tmp_html:
+            m.save(tmp_html.name)
+            tmp_html_path = tmp_html.name
+
+        # Use Playwright to screenshot the local HTML file
+        from playwright.sync_api import sync_playwright
+        
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_img:
+            output_image_path = tmp_img.name
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={"width": 800, "height": 600})
+            page.goto(f"file://{tmp_html_path}")
+            # Wait a moment for tiles to load
+            time.sleep(2)
+            page.screenshot(path=output_image_path)
+            browser.close()
+
+        # Cleanup HTML
+        os.remove(tmp_html_path)
+        
+        return output_image_path
+
+    except Exception as e:
+        print(f"⚠️ Map generation failed: {e}")
         return None
 
 def get_region(lat: float, lon: float) -> str:
@@ -150,20 +208,26 @@ def get_metropolitan_today():
                 camera_list.append({
                     "name": cam,
                     "distance": distance_km,
-                    "region": region
+                    "region": region,
+                    "lat": location.latitude,
+                    "lon": location.longitude
                 })
             else:
                 camera_list.append({
                     "name": cam,
                     "distance": None,
-                    "region": "Unknown"
+                    "region": "Unknown",
+                    "lat": None,
+                    "lon": None
                 })
         except Exception as e:
             print(f"⚠️ Geocoding failed for {cam}: {e}")
             camera_list.append({
                 "name": cam,
                 "distance": None,
-                "region": "Unknown"
+                "region": "Unknown",
+                "lat": None,
+                "lon": None
             })
         
         # Sleep to respect Nominatim’s rate limit
@@ -173,7 +237,7 @@ def get_metropolitan_today():
     camera_list.sort(key=lambda x: x["distance"] if x["distance"] is not None else float("inf"))
     return camera_list
 
-def send_to_discord(cameras):
+def send_to_discord(cameras, image_path: Optional[str] = None):
     # Send the formatted camera list to a Discord webhook
     webhook = os.getenv("DISCORD_WEBHOOK")
     if not webhook:
@@ -222,17 +286,59 @@ def send_to_discord(cameras):
 
     # Send message to Discord via POST request
     # Check message length limit (Discord is 2000 chars)
-    if len(message) > 2000:
-        # Simple split if too long (could be improved)
-        parts = [message[i:i+1900] for i in range(0, len(message), 1900)]
-        for part in parts:
-            requests.post(webhook, json={"content": part})
-    else:
-        response = requests.post(webhook, json={"content": message})
-        if response.status_code != 204:
-            print(f"❌ Failed to send message to Discord. Status code: {response.status_code}")
+    # Note: If sending an image, we need to use multipart/form-data, which requests handles via 'files'
+    # and the JSON payload becomes 'payload_json' string if using files, or just data.
+    # But for simple webhooks, 'content' field in body with files often works if structured right.
+    # Best practice for Discord webhooks with files is:
+    # files = {'file': open(image_path, 'rb')}
+    # data = {'content': message}
+    
+    files = {}
+    opened_file = None
+    if image_path and os.path.exists(image_path):
+        opened_file = open(image_path, 'rb')
+        files['file'] = ('map_preview.png', opened_file, 'image/png')
+
+    try:
+        if len(message) > 2000:
+            # If message is too long, we can't easily attach the file to all split parts.
+            # Strategy: Send the image with the first part, or send text first then image.
+            # Let's send text parts first, then image separately if needed.
+            parts = [message[i:i+1900] for i in range(0, len(message), 1900)]
+            for i, part in enumerate(parts):
+                # Attach file only to the last part? Or send file separately?
+                # Sending file separately is safer.
+                requests.post(webhook, json={"content": part})
+            
+            if files:
+                requests.post(webhook, files=files)
         else:
-            print("✅ Message sent successfully.")
+            response = requests.post(webhook, data={"content": message}, files=files)
+            if response.status_code not in (200, 204):
+                print(f"❌ Failed to send message to Discord. Status code: {response.status_code}")
+            else:
+                print("✅ Message sent successfully.")
+    finally:
+        if opened_file:
+            opened_file.close()
+
+# Main execution block: fetch today's cameras and send to Discord
+if __name__ == "__main__":
+    cameras = get_metropolitan_today()
+    
+    # Generate map if we have cameras
+    map_image = None
+    if cameras:
+        map_image = generate_map_image(cameras)
+        
+    send_to_discord(cameras, map_image)
+    
+    # Clean up
+    if map_image and os.path.exists(map_image):
+        try:
+            os.remove(map_image)
+        except Exception:
+            pass
 
 # Main execution block: fetch today's cameras and send to Discord
 if __name__ == "__main__":

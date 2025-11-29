@@ -2,4 +2,4 @@ requests
 beautifulsoup4
 geopy
 pytz
-playwright
+playwrightfolium
