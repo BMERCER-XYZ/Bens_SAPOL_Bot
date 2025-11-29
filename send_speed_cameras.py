@@ -64,7 +64,7 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
     print("🗺️ Generating map preview...")
     try:
         # Initialize map (bounds will be set later)
-        m = folium.Map(tiles="CartoDB positron")
+        m = folium.Map(tiles="CartoDB dark_matter")
 
         bounds_points = []
 
