@@ -90,12 +90,12 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
                     tooltip=cam['name']
                 ).add_to(m)
         
-        # Set fixed bounds: 3km radius box around CBD
+        # Set fixed bounds: 4km radius box around CBD
         # Calculate bounds (0=North, 180=South, 90=East, 270=West)
-        lat_max = geodesic(kilometers=3).destination(ADELAIDE_CBD_COORDS, 0).latitude
-        lat_min = geodesic(kilometers=3).destination(ADELAIDE_CBD_COORDS, 180).latitude
-        lon_max = geodesic(kilometers=3).destination(ADELAIDE_CBD_COORDS, 90).longitude
-        lon_min = geodesic(kilometers=3).destination(ADELAIDE_CBD_COORDS, 270).longitude
+        lat_max = geodesic(kilometers=4).destination(ADELAIDE_CBD_COORDS, 0).latitude
+        lat_min = geodesic(kilometers=4).destination(ADELAIDE_CBD_COORDS, 180).latitude
+        lon_max = geodesic(kilometers=4).destination(ADELAIDE_CBD_COORDS, 90).longitude
+        lon_min = geodesic(kilometers=4).destination(ADELAIDE_CBD_COORDS, 270).longitude
         
         m.fit_bounds([[lat_min, lon_min], [lat_max, lon_max]])
         
