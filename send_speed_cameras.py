@@ -366,8 +366,3 @@ if __name__ == "__main__":
             os.remove(map_image)
         except Exception:
             pass
-
-# Main execution block: fetch today's cameras and send to Discord
-if __name__ == "__main__":
-    cameras = get_metropolitan_today()
-    send_to_discord(cameras)
