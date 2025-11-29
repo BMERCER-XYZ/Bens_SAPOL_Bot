@@ -63,25 +63,48 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
 
     print("🗺️ Generating map preview...")
     try:
-        # Center map on Adelaide
-        m = folium.Map(location=ADELAIDE_CBD_COORDS, zoom_start=11, tiles="CartoDB positron")
+        # Initialize map (bounds will be set later)
+        m = folium.Map(tiles="CartoDB positron")
 
-        # Add markers for each camera
-        cameras_with_loc = [c for c in cameras if c.get('lat') is not None]
-        if not cameras_with_loc:
-            return None
+        bounds_points = []
+
+        for cam in cameras:
+            if cam.get('geojson'):
+                # If we have GeoJSON (likely a LineString for a road), plot it
+                folium.GeoJson(
+                    cam['geojson'],
+                    style_function=lambda x: {
+                        'color': '#FF0000',
+                        'weight': 5,
+                        'opacity': 0.7
+                    },
+                    tooltip=cam['name']
+                ).add_to(m)
+            elif cam.get('lat') is not None:
+                # Fallback to circle if no geometry or Point geometry
+                folium.Circle(
+                    location=[cam['lat'], cam['lon']],
+                    radius=200,
+                    color="#FF3333",
+                    fill=True,
+                    fill_color="#FF3333",
+                    fill_opacity=0.4,
+                    tooltip=cam['name']
+                ).add_to(m)
             
-        for cam in cameras_with_loc:
-            # Draw a circle to represent the area
-            folium.Circle(
-                location=[cam['lat'], cam['lon']],
-                radius=400,  # 400 meters radius
-                color="#FF3333",
-                fill=True,
-                fill_color="#FF3333",
-                fill_opacity=0.4,
-                tooltip=cam['name']
-            ).add_to(m)
+            if cam.get('lat') is not None:
+                bounds_points.append([cam['lat'], cam['lon']])
+        
+        if not bounds_points:
+            return None
+
+        # Fit bounds to show all cameras
+        if len(bounds_points) == 1:
+            # If only one point, center and zoom
+            m.location = bounds_points[0]
+            m.zoom_start = 14
+        else:
+            m.fit_bounds(bounds_points, padding=(30, 30))
         
         # Save map to a temporary HTML file
         with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode='w', encoding='utf-8') as tmp_html:
@@ -200,7 +223,8 @@ def get_metropolitan_today():
 
     for cam in raw_cameras:
         try:
-            location = geolocator.geocode(f"{cam}, South Australia", timeout=10)
+            # Request geojson geometry to highlight roads
+            location = geolocator.geocode(f"{cam}, South Australia", timeout=10, geometry='geojson')
             if location:
                 cam_coords = (location.latitude, location.longitude)
                 distance_km = geodesic(user_location, cam_coords).km
@@ -210,7 +234,8 @@ def get_metropolitan_today():
                     "distance": distance_km,
                     "region": region,
                     "lat": location.latitude,
-                    "lon": location.longitude
+                    "lon": location.longitude,
+                    "geojson": location.raw.get("geojson")
                 })
             else:
                 camera_list.append({
@@ -218,7 +243,8 @@ def get_metropolitan_today():
                     "distance": None,
                     "region": "Unknown",
                     "lat": None,
-                    "lon": None
+                    "lon": None,
+                    "geojson": None
                 })
         except Exception as e:
             print(f"⚠️ Geocoding failed for {cam}: {e}")
@@ -227,7 +253,8 @@ def get_metropolitan_today():
                 "distance": None,
                 "region": "Unknown",
                 "lat": None,
-                "lon": None
+                "lon": None,
+                "geojson": None
             })
         
         # Sleep to respect Nominatim’s rate limit
