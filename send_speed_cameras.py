@@ -64,7 +64,7 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
     print("🗺️ Generating map preview...")
     try:
         # Initialize map
-        m = folium.Map(tiles="Stamen Toner")
+        m = folium.Map(tiles="CartoDB dark_matter")
 
         for cam in cameras:
             if cam.get('geojson'):
@@ -92,10 +92,10 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
         
         # Set fixed bounds: 10km radius box around CBD
         # Calculate bounds (0=North, 180=South, 90=East, 270=West)
-        lat_max = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 0).latitude
-        lat_min = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 180).latitude
-        lon_max = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 90).longitude
-        lon_min = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 270).longitude
+        lat_max = geodesic(kilometers=5).destination(ADELAIDE_CBD_COORDS, 0).latitude
+        lat_min = geodesic(kilometers=5).destination(ADELAIDE_CBD_COORDS, 180).latitude
+        lon_max = geodesic(kilometers=5).destination(ADELAIDE_CBD_COORDS, 90).longitude
+        lon_min = geodesic(kilometers=5).destination(ADELAIDE_CBD_COORDS, 270).longitude
         
         m.fit_bounds([[lat_min, lon_min], [lat_max, lon_max]])
         
