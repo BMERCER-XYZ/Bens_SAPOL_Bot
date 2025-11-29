@@ -63,10 +63,8 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
 
     print("🗺️ Generating map preview...")
     try:
-        # Initialize map (bounds will be set later)
+        # Initialize map
         m = folium.Map(tiles="CartoDB dark_matter")
-
-        bounds_points = []
 
         for cam in cameras:
             if cam.get('geojson'):
@@ -91,20 +89,15 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
                     fill_opacity=0.4,
                     tooltip=cam['name']
                 ).add_to(m)
-            
-            if cam.get('lat') is not None:
-                bounds_points.append([cam['lat'], cam['lon']])
         
-        if not bounds_points:
-            return None
-
-        # Fit bounds to show all cameras
-        if len(bounds_points) == 1:
-            # If only one point, center and zoom
-            m.location = bounds_points[0]
-            m.zoom_start = 14
-        else:
-            m.fit_bounds(bounds_points, padding=(30, 30))
+        # Set fixed bounds: 10km radius box around CBD
+        # Calculate bounds (0=North, 180=South, 90=East, 270=West)
+        lat_max = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 0).latitude
+        lat_min = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 180).latitude
+        lon_max = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 90).longitude
+        lon_min = geodesic(kilometers=10).destination(ADELAIDE_CBD_COORDS, 270).longitude
+        
+        m.fit_bounds([[lat_min, lon_min], [lat_max, lon_max]])
         
         # Save map to a temporary HTML file
         with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode='w', encoding='utf-8') as tmp_html:
