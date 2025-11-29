@@ -1,5 +1,6 @@
 # Import required libraries
 import requests
+import math
 from bs4 import BeautifulSoup
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
@@ -18,6 +19,9 @@ SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera
 # Set timezone to Adelaide and get today’s date in DD/MM/YYYY format
 tz = pytz.timezone("Australia/Adelaide")
 today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
+
+# Adelaide CBD Coordinates for region calculation
+ADELAIDE_CBD_COORDS = (-34.9285, 138.6007)
 
 
 def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
@@ -50,56 +54,40 @@ def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
         print(f"⚠️ Playwright fetch failed: {e}")
         return None
 
+def get_region(lat: float, lon: float) -> str:
+    """Determine the region (North, East, South, West, CBD) based on coordinates."""
+    cbd_dist = geodesic(ADELAIDE_CBD_COORDS, (lat, lon)).km
+    
+    if cbd_dist < 2.5:
+        return "CBD"
+
+    # Calculate bearing to determine N/E/S/W
+    dy = lat - ADELAIDE_CBD_COORDS[0]
+    dx = lon - ADELAIDE_CBD_COORDS[1]
+    angle = math.degrees(math.atan2(dy, dx))
+
+    # Angle is standard math angle (0 is East, 90 is North, etc.)
+    if 45 <= angle < 135:
+        return "Northern Suburbs"
+    elif -45 <= angle < 45:
+        return "Eastern Suburbs"
+    elif -135 <= angle < -45:
+        return "Southern Suburbs"
+    else:
+        return "Western Suburbs"
+
 def get_metropolitan_today():
     # Fetch and parse SAPOL camera list for today's metropolitan locations
     print(f"📅 Fetching cameras for: {today}")
 
-    # Use a session with a browser-like User-Agent to avoid bot blocking (403)
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": os.getenv("SAPOL_USER_AGENT", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                                           "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                           "Chrome/120.0.0.0 Safari/537.36"),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Referer": "https://www.google.com/",
-    })
-
-    # Try a few times with backoff in case of transient blocks
-    res = None
-    for attempt in range(1, 4):
-        try:
-            res = session.get(SAPOL_URL, timeout=15)
-            if res.status_code == 200:
-                break
-            else:
-                print(f"⚠️ Fetch attempt {attempt} returned status {res.status_code}")
-        except requests.RequestException as e:
-            print(f"⚠️ Fetch attempt {attempt} failed: {e}")
-        time.sleep(attempt * 1.5)
-
-    # If we failed to fetch or got blocked (403), attempt a headless-browser fetch as a fallback.
-    if not res or res.status_code == 403:
-        print("🔁 Attempting headless-browser fetch fallback due to 403 or missing response...")
-        html = fetch_with_playwright(SAPOL_URL)
-        if html:
-            class DummyResp:
-                status_code = 200
-                text = html
-                headers = {}
-            res = DummyResp()
-        else:
-            if not res:
-                print("❌ Failed to fetch page (no response).")
-            else:
-                print(f"❌ Failed to fetch page, status code: {res.status_code}")
-                print("Response headers:", dict(res.headers))
-                snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
-                print("Page snippet:", snippet[:1000])
-            return []
+    # Fetch directly using Playwright
+    html = fetch_with_playwright(SAPOL_URL)
+    if not html:
+        print("❌ Failed to fetch page using Playwright.")
+        return []
 
     # Parse the HTML and extract the relevant camera list
-    soup = BeautifulSoup(res.text, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")
 
     # Try a few ways to locate camera entries because the site structure can change.
     # Prepare common date formats we may encounter in attributes or text
@@ -143,8 +131,8 @@ def get_metropolitan_today():
 
     if not raw_cameras:
         print(f"❌ No metropolitan cameras found for {today}.")
-        # For debugging, print a short snippet of the page where we expected the list
-        snippet = res.text[:2000].replace('\n', ' ') if res.text else ''
+        # For debugging, print a short snippet of the HTML
+        snippet = html[:2000].replace('\n', ' ') if html else ''
         print("Page snippet:", snippet[:1000])
         return []
 
@@ -158,18 +146,31 @@ def get_metropolitan_today():
             if location:
                 cam_coords = (location.latitude, location.longitude)
                 distance_km = geodesic(user_location, cam_coords).km
-                camera_list.append((cam, distance_km))
+                region = get_region(location.latitude, location.longitude)
+                camera_list.append({
+                    "name": cam,
+                    "distance": distance_km,
+                    "region": region
+                })
             else:
-                camera_list.append((cam, None))
+                camera_list.append({
+                    "name": cam,
+                    "distance": None,
+                    "region": "Unknown"
+                })
         except Exception as e:
             print(f"⚠️ Geocoding failed for {cam}: {e}")
-            camera_list.append((cam, None))
+            camera_list.append({
+                "name": cam,
+                "distance": None,
+                "region": "Unknown"
+            })
         
         # Sleep to respect Nominatim’s rate limit
         time.sleep(1)
 
     # Sort cameras by distance (unknown distances go to the end)
-    camera_list.sort(key=lambda x: x[1] if x[1] is not None else float("inf"))
+    camera_list.sort(key=lambda x: x["distance"] if x["distance"] is not None else float("inf"))
     return camera_list
 
 def send_to_discord(cameras):
@@ -179,23 +180,59 @@ def send_to_discord(cameras):
         print("❌ Missing DISCORD_WEBHOOK environment variable.")
         return
 
-    # Format the message with camera locations and distances
-    if cameras:
-        message = f"**Metropolitan speed cameras for {today}:**\n"
-        for cam, dist in cameras:
-            if dist is not None:
-                message += f"• {cam} — `{dist:.1f} km`\n"
-            else:
-                message += f"• {cam} — `distance unknown`\n"
-    else:
+    if not cameras:
         message = f"No metropolitan cameras found for {today}."
+        requests.post(webhook, json={"content": message})
+        return
+
+    # Group cameras by region
+    regions = {
+        "CBD": [],
+        "Northern Suburbs": [],
+        "Eastern Suburbs": [],
+        "Southern Suburbs": [],
+        "Western Suburbs": [],
+        "Unknown": []
+    }
+    
+    for cam in cameras:
+        reg = cam.get("region", "Unknown")
+        if reg in regions:
+            regions[reg].append(cam)
+        else:
+            regions["Unknown"].append(cam)
+
+    # Build the message
+    message = f"**Metropolitan speed cameras for {today}:**\n"
+    
+    # Order of display
+    display_order = ["Northern Suburbs", "Eastern Suburbs", "Southern Suburbs", "Western Suburbs", "CBD", "Unknown"]
+    
+    for region_name in display_order:
+        region_cams = regions[region_name]
+        if region_cams:
+            message += f"\n**{region_name}**\n"
+            for cam in region_cams:
+                dist = cam['distance']
+                name = cam['name']
+                if dist is not None:
+                    message += f"• {name} — `{dist:.1f} km`\n"
+                else:
+                    message += f"• {name} — `distance unknown`\n"
 
     # Send message to Discord via POST request
-    response = requests.post(webhook, json={"content": message})
-    if response.status_code != 204:
-        print(f"❌ Failed to send message to Discord. Status code: {response.status_code}")
+    # Check message length limit (Discord is 2000 chars)
+    if len(message) > 2000:
+        # Simple split if too long (could be improved)
+        parts = [message[i:i+1900] for i in range(0, len(message), 1900)]
+        for part in parts:
+            requests.post(webhook, json={"content": part})
     else:
-        print("✅ Message sent successfully.")
+        response = requests.post(webhook, json={"content": message})
+        if response.status_code != 204:
+            print(f"❌ Failed to send message to Discord. Status code: {response.status_code}")
+        else:
+            print("✅ Message sent successfully.")
 
 # Main execution block: fetch today's cameras and send to Discord
 if __name__ == "__main__":
