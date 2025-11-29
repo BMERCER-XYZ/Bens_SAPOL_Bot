@@ -64,7 +64,7 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
     print("🗺️ Generating map preview...")
     try:
         # Initialize map
-        m = folium.Map(tiles="CartoDB dark_matter")
+        m = folium.Map(tiles="Stamen Toner")
 
         for cam in cameras:
             if cam.get('geojson'):
