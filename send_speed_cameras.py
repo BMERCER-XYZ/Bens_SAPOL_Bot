@@ -1,6 +1,7 @@
 # Import required libraries
 import requests
 import math
+import random
 from bs4 import BeautifulSoup
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
@@ -24,6 +25,18 @@ today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
 
 # Adelaide CBD Coordinates for region calculation
 ADELAIDE_CBD_COORDS = (-34.9285, 138.6007)
+
+# List of greetings for Maddy
+GREETINGS = [
+    "Good morning Maddy! 🌞 Here are the speed camera locations for {today}:",
+    "HEY MADDY! WAKE UP!! CHECK OUT THE FUCKASS CAMERAS FOR {today}:",
+    "Rise and shine Maddy! ☕ Check out the traffic cameras for {today}:",
+    "Hello Maddy! 🚗 Stay safe on the roads! Here are the cameras for {today}:",
+    "Top of the morning to you Maddy! 🍀 Speed camera list for {today}:",
+    "Happy day Maddy! Watch out for these cameras today ({today}):",
+    "Wakey wakey Maddy! Here is your daily traffic camera update for {today}:",
+    "Greetings Maddy! 🚦 Here is where the cameras are hiding today ({today}):"
+]
 
 
 def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
@@ -273,7 +286,8 @@ def send_to_discord(cameras, image_path: Optional[str] = None):
         return
 
     # Build the message
-    message = f"**Metropolitan speed cameras for {today}:**\n"
+    greeting = random.choice(GREETINGS).format(today=today)
+    message = f"**{greeting}**\n"
     
     for cam in cameras:
         dist = cam['distance']
