@@ -272,40 +272,16 @@ def send_to_discord(cameras, image_path: Optional[str] = None):
         requests.post(webhook, json={"content": message})
         return
 
-    # Group cameras by region
-    regions = {
-        "CBD": [],
-        "Northern Suburbs": [],
-        "Eastern Suburbs": [],
-        "Southern Suburbs": [],
-        "Western Suburbs": [],
-        "Unknown": []
-    }
-    
-    for cam in cameras:
-        reg = cam.get("region", "Unknown")
-        if reg in regions:
-            regions[reg].append(cam)
-        else:
-            regions["Unknown"].append(cam)
-
     # Build the message
     message = f"**Metropolitan speed cameras for {today}:**\n"
     
-    # Order of display
-    display_order = ["Northern Suburbs", "Eastern Suburbs", "Southern Suburbs", "Western Suburbs", "CBD", "Unknown"]
-    
-    for region_name in display_order:
-        region_cams = regions[region_name]
-        if region_cams:
-            message += f"\n**{region_name}**\n"
-            for cam in region_cams:
-                dist = cam['distance']
-                name = cam['name']
-                if dist is not None:
-                    message += f"• {name} — `{dist:.1f} km`\n"
-                else:
-                    message += f"• {name} — `distance unknown`\n"
+    for cam in cameras:
+        dist = cam['distance']
+        name = cam['name']
+        if dist is not None:
+            message += f"• {name} — `{dist:.1f} km`\n"
+        else:
+            message += f"• {name} — `distance unknown`\n"
 
     # Send message to Discord via POST request
     # Check message length limit (Discord is 2000 chars)
