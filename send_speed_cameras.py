@@ -19,9 +19,12 @@ user_location = (-34.9206, 138.5210)
 # URL of SAPOL traffic camera listings
 SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
 
-# Set timezone to Adelaide and get today’s date in DD/MM/YYYY format
+# Set timezone to Adelaide (used when computing dates dynamically)
 tz = pytz.timezone("Australia/Adelaide")
-today = datetime.datetime.now(tz).strftime("%d/%m/%Y")
+
+# helper to format current date in DD/MM/YYYY for our lookup/greetings
+def _adelaide_today() -> str:
+    return datetime.datetime.now(tz).strftime("%d/%m/%Y")
 
 # Adelaide CBD Coordinates for region calculation
 ADELAIDE_CBD_COORDS = (-34.9285, 138.6007)
@@ -307,64 +310,94 @@ def get_region(lat: float, lon: float) -> str:
         return "Western Suburbs"
 
 def get_metropolitan_today():
-    # Fetch and parse SAPOL camera list for today's metropolitan locations
+    """Fetch and parse SAPOL camera list, preferring today's entries but
+    falling back to the nearest scheduled date if necessary.
+
+    Returns a tuple `(camera_list, date_used_string)` where `date_used_string`
+    is the calendar date that was actually matched (e.g. "22/02/2026").
+    """
+    # recalc today so repeated runs use an up-to-date value
+    today = _adelaide_today()
     print(f"📅 Fetching cameras for: {today}")
 
-    # Fetch directly using Playwright
     html = fetch_with_playwright(SAPOL_URL)
     if not html:
         print("❌ Failed to fetch page using Playwright.")
-        return []
+        return [], today
 
-    # Parse the HTML and extract the relevant camera list
     soup = BeautifulSoup(html, "html.parser")
 
-    # Try a few ways to locate camera entries because the site structure can change.
-    # Prepare common date formats we may encounter in attributes or text
-    iso_today = datetime.datetime.now(tz).strftime("%Y-%m-%d")
-    long_today = datetime.datetime.now(tz).strftime("%d %B %Y")
-    abbr_today = datetime.datetime.now(tz).strftime("%d %b %Y")
-    date_variants = {today, iso_today, long_today, abbr_today}
+    # collect all list items that look like camera entries
+    cams_by_date = {}
 
-    # 1) Directly search for elements that have data-value matching any date variant
-    matched = []
-    for dv in date_variants:
-        matched.extend(soup.find_all(attrs={"data-value": dv}))
+    def _record(li, date_str, name):
+        cams_by_date.setdefault(date_str, []).append(name)
 
-    # 2) If no data-value matches, look for list items that mention the date in their text
-    if not matched:
-        for li in soup.find_all("li"):
-            text = li.get_text(" ", strip=True)
-            if any(dv in text for dv in date_variants):
-                matched.append(li)
+    # helper to try strip a date prefix from text
+    def _strip_date_prefix(text, date_str):
+        if text.startswith(date_str):
+            # remove any punctuation or whitespace that follows
+            return text[len(date_str):].lstrip(' -–—:,\t')
+        return text
 
-    # 3) As a fallback, try to find any lists that look like camera lists (by class name hints)
-    if not matched:
-        possible_uls = []
-        for cls in ("metrolist4", "metro-list", "camera-list", "showlist"):
-            possible_uls.extend(soup.find_all("ul", class_=cls))
-        for ul in possible_uls:
-            for li in ul.find_all("li"):
-                matched.append(li)
+    for li in soup.find_all("li"):
+        dv = li.get("data-value")
+        text = li.get_text(" ", strip=True)
+        if dv:
+            name = _strip_date_prefix(text, dv).strip()
+            if name:
+                _record(li, dv, name)
+            continue
+        # if there's no data-value, try to guess a date at the start of text
+        parts = text.split(None, 1)
+        if len(parts) > 1 and any(parts[0] == fmt for fmt in [today,
+                                                               datetime.datetime.now(tz).strftime("%Y-%m-%d"),
+                                                               datetime.datetime.now(tz).strftime("%d %B %Y"),
+                                                               datetime.datetime.now(tz).strftime("%d %b %Y")]):
+            # first token looks like one of our date formats
+            date_str = parts[0]
+            name = parts[1]
+            _record(li, date_str, name)
+            continue
+        # otherwise skip this <li> - probably part of navigation/menu
 
-    # Extract camera location names from matched items
-    raw_cameras = []
-    for el in matched:
-        # If the matched element is an li or contains an li, prefer the li text
-        li = el if getattr(el, "name", None) == "li" else el.find_parent("li") or el
-        cam_text = li.get_text(" ", strip=True)
-        # Try to remove the date portion from the string if present (common formats)
-        for dv in date_variants:
-            cam_text = cam_text.replace(dv, "").strip()
-        if cam_text:
-            raw_cameras.append(cam_text)
-
-    if not raw_cameras:
-        print(f"❌ No metropolitan cameras found for {today}.")
-        # For debugging, print a short snippet of the HTML
+    if not cams_by_date:
+        print("❌ No camera entries could be parsed from page.")
         snippet = html[:2000].replace('\n', ' ') if html else ''
         print("Page snippet:", snippet[:1000])
-        return []
+        return [], today
+
+    # try to use today's list first
+    if today in cams_by_date:
+        chosen_date = today
+    else:
+        # parse all date strings into datetimes for comparison
+        parsed = []
+        for ds in cams_by_date.keys():
+            for fmt in ("%d/%m/%Y", "%Y-%m-%d", "%d %B %Y", "%d %b %Y"):
+                try:
+                    dt = datetime.datetime.strptime(ds, fmt)
+                    parsed.append((dt, ds))
+                    break
+                except Exception:
+                    continue
+        if not parsed:
+            # nothing parsed? just pick arbitrary key
+            chosen_date = next(iter(cams_by_date))
+        else:
+            now_dt = datetime.datetime.now(tz).replace(tzinfo=None)
+            # pick the smallest date >= today, otherwise the latest past date
+            future = [p for p in parsed if p[0].date() >= now_dt.date()]
+            if future:
+                chosen_date = min(future)[1]
+            else:
+                chosen_date = max(parsed)[1]
+        print(f"⚠️ No cameras for today ({today}); using date {chosen_date} from page.")
+
+    raw_cameras = cams_by_date.get(chosen_date, [])
+    if not raw_cameras:
+        print(f"❌ After fallback no cameras found for {chosen_date}.")
+        return [], chosen_date
 
     # Geocode each camera location and calculate distance from user's location
     geolocator = Nominatim(user_agent="sapol_bot")
@@ -411,22 +444,25 @@ def get_metropolitan_today():
 
     # Sort cameras by distance (unknown distances go to the end)
     camera_list.sort(key=lambda x: x["distance"] if x["distance"] is not None else float("inf"))
-    return camera_list
+    return camera_list, chosen_date
 
-def send_to_discord(cameras, image_path: Optional[str] = None):
+def send_to_discord(cameras, image_path: Optional[str] = None, date_str: Optional[str] = None):
     # Send the formatted camera list to a Discord webhook
     webhook = os.getenv("DISCORD_WEBHOOK")
     if not webhook:
         print("❌ Missing DISCORD_WEBHOOK environment variable.")
         return
 
+    # use provided date or recalc current
+    date_for_message = date_str or _adelaide_today()
+
     if not cameras:
-        message = f"No metropolitan cameras found for {today}."
+        message = f"No metropolitan cameras found for {date_for_message}."
         requests.post(webhook, json={"content": message})
         return
 
     # Build the message
-    greeting = random.choice(GREETINGS).format(today=today)
+    greeting = random.choice(GREETINGS).format(today=date_for_message)
     message = f"**{greeting}**\n"
     
     for cam in cameras:
@@ -477,14 +513,14 @@ def send_to_discord(cameras, image_path: Optional[str] = None):
 
 # Main execution block: fetch today's cameras and send to Discord
 if __name__ == "__main__":
-    cameras = get_metropolitan_today()
+    cameras, used_date = get_metropolitan_today()
     
     # Generate map if we have cameras
     map_image = None
     if cameras:
         map_image = generate_map_image(cameras)
         
-    send_to_discord(cameras, map_image)
+    send_to_discord(cameras, map_image, date_str=used_date)
     
     # Clean up
     if map_image and os.path.exists(map_image):
