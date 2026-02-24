@@ -182,10 +182,13 @@ GREETINGS = [
 ]
 
 
-def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
+def fetch_with_playwright(url: str, timeout: int = 30, max_retries: int = 3) -> Optional[str]:
     """Use Playwright to render the page and return HTML. Returns None on failure.
 
-    This is used as a fallback when direct requests are blocked (e.g., 403).
+    This is used as a fallback when direct requests are blocked (e.g., 403) or
+    when Cloudflare presents an interstitial.  We perform a few retries with a
+    short delay if we detect the "Just a moment" challenge string in the
+    returned HTML.
     """
     try:
         from playwright.sync_api import sync_playwright
@@ -193,24 +196,46 @@ def fetch_with_playwright(url: str, timeout: int = 30) -> Optional[str]:
         print("⚠️ Playwright is not installed. Install 'playwright' and run 'playwright install' to enable browser fallback.")
         return None
 
-    try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(user_agent=os.getenv("SAPOL_USER_AGENT", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"))
-            page = context.new_page()
-            page.set_default_navigation_timeout(timeout * 1000)
-            page.goto(url)
-            # Wait for some page content to load; adjust selector if the site uses dynamic loading
-            try:
-                page.wait_for_load_state("networkidle", timeout=5000)
-            except Exception:
-                pass
-            html = page.content()
-            browser.close()
-            return html
-    except Exception as e:
-        print(f"⚠️ Playwright fetch failed: {e}")
-        return None
+    attempt = 0
+    html = None
+    while attempt < max_retries:
+        attempt += 1
+        try:
+            with sync_playwright() as p:
+                # running headless should normally be fine but cloudflare sometimes
+                # treats headless browsers differently; the user agent is also
+                # randomized via environment variable to help.
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(user_agent=os.getenv(
+                    "SAPOL_USER_AGENT",
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                ))
+                page = context.new_page()
+                page.set_default_navigation_timeout(timeout * 1000)
+                page.goto(url)
+                # Wait for some page content to load; networkidle is best effort
+                try:
+                    page.wait_for_load_state("networkidle", timeout=5000)
+                except Exception:
+                    pass
+                html = page.content()
+                browser.close()
+        except Exception as e:
+            print(f"⚠️ Playwright fetch failed (attempt {attempt}): {e}")
+            html = None
+
+        # detect Cloudflare interstitial pages by looking for tell‑tale strings
+        if html and ("Just a moment" in html or "cf-browser-verification" in html):
+            print(f"⚠️ Cloudflare challenge detected (attempt {attempt}); retrying")
+            # shave off a little jitter so we don't look automated
+            time.sleep(2 + random.random() * 2)
+            continue
+
+        # if we got some HTML and it doesn't look like a challenge page, return it
+        return html
+
+    # exhausted retries, give back whatever we have (may be None or a challenge page)
+    return html
 
 def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
     """Generates a static map image of camera locations using Folium and Playwright."""
@@ -324,6 +349,18 @@ def get_metropolitan_today():
     if not html:
         print("❌ Failed to fetch page using Playwright.")
         return [], today
+
+    # if our helper returned a Cloudflare challenge page despite retries, try one
+    # more time with a pause.  This is just a belt‑and‑braces check.
+    if html and ("Just a moment" in html or "cf-browser-verification" in html):
+        print("⚠️ Received Cloudflare interstitial; sleeping and retrying once more")
+        time.sleep(5)
+        html = fetch_with_playwright(SAPOL_URL)
+        if not html or "Just a moment" in html or "cf-browser-verification" in html:
+            print("❌ Still seeing Cloudflare challenge after retry, aborting.")
+            snippet = html[:2000].replace('\n', ' ') if html else ''
+            print("Page snippet:", snippet[:1000])
+            return [], today
 
     soup = BeautifulSoup(html, "html.parser")
 
