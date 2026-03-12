@@ -2,7 +2,7 @@ name: Send SAPOL Cameras to Discord
 
 on:
   schedule:
-    - cron: "15 16 * * *"  # 1:45 AM Adelaide time (UTC+9:30), one hour earlier
+    - cron: "30 16 * * *"  # 1:45 AM Adelaide time (UTC+9:30), one hour earlier
   workflow_dispatch:
 
 jobs:
