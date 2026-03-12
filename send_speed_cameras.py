@@ -436,6 +436,18 @@ def get_metropolitan_today():
         print(f"❌ After fallback no cameras found for {chosen_date}.")
         return [], chosen_date
 
+    # Remove duplicate camera entries while preserving order
+    seen = set()
+    unique_cameras = []
+    for cam in raw_cameras:
+        if cam not in seen:
+            seen.add(cam)
+            unique_cameras.append(cam)
+    
+    raw_cameras = unique_cameras
+    if len(unique_cameras) < len(cams_by_date.get(chosen_date, [])):
+        print(f"🔄 Removed {len(cams_by_date.get(chosen_date, [])) - len(unique_cameras)} duplicate camera entries.")
+
     # Geocode each camera location and calculate distance from user's location
     geolocator = Nominatim(user_agent="sapol_bot")
     camera_list = []
