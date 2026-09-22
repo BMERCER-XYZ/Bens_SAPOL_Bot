@@ -196,9 +196,16 @@ def write_site_data(schedule: Dict[str, List[Dict[str, Any]]]) -> None:
     locations = {camera["name"]: camera for camera in _geocode_names([camera["name"] for camera in fixed])}
     for camera in fixed:
         camera.update({key: value for key, value in locations.get(camera["name"], {}).items() if key != "name"})
-    os.makedirs("site", exist_ok=True)
-    with open("site/data.json", "w", encoding="utf-8") as data_file:
-        json.dump({"generated_at": datetime.datetime.now(tz).isoformat(), "tile_key": os.getenv("API_KEY", ""), "dates": schedule, "fixed_cameras": fixed}, data_file, ensure_ascii=True)
+    all_cameras = {camera["name"]: camera for cameras in schedule.values() for camera in cameras}
+    os.makedirs("docs", exist_ok=True)
+    with open("docs/data.json", "w", encoding="utf-8") as data_file:
+        json.dump({
+            "generated_at": datetime.datetime.now(tz).isoformat(),
+            "tile_key": os.getenv("API_KEY", ""),
+            "dates": schedule,
+            "all_cameras": list(all_cameras.values()),
+            "fixed_cameras": fixed,
+        }, data_file, ensure_ascii=True)
 
 
 def send_to_discord(cameras, image_path: Optional[str] = None, date_str: Optional[str] = None):

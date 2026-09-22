@@ -101,7 +101,7 @@ function initialise(data) {
   const select = document.getElementById("date-select");
   select.innerHTML = dates.map(date => `<option value="${date}">${new Date(`${date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</option>`).join("");
   select.value = state.date;
-  document.getElementById("updated-label").textContent = `Updated ${new Date(data.generated_at).toLocaleString("en-AU")}`;
+  document.getElementById("updated-label").textContent = `${data.all_cameras.length} total mobile locations | Updated ${new Date(data.generated_at).toLocaleString("en-AU")}`;
   setTheme(state.dark);
   renderLegend();
   renderDate();
