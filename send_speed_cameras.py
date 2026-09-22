@@ -92,12 +92,20 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
     if not cameras:
         return None
 
+    api_key = os.getenv("API_KEY")
+    if not api_key:
+        print("⚠️ Missing API_KEY environment variable; skipping map generation.")
+        return None
+
     print("🗺️ Generating map preview...")
     try:
         # Initialize map
         m = folium.Map(zoom_control=False)
         folium.TileLayer(
-            tiles="CartoDB dark_matter",
+            tiles=f"https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png?key={api_key}",
+            attr="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
+            subdomains="abcd",
+            max_zoom=20,
         ).add_to(m)
 
         for cam in cameras:

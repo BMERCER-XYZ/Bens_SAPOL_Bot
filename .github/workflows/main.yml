@@ -30,6 +30,7 @@ jobs:
       - name: Run script
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          API_KEY: ${{ secrets.API_KEY }}
           # Optional: override User-Agent if needed
           SAPOL_USER_AGENT: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         run: python send_speed_cameras.py
