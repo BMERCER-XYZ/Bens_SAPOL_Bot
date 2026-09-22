@@ -5,6 +5,15 @@ on:
     - cron: "30 16 * * *"  # 1:45 AM Adelaide time (UTC+9:30), one hour earlier
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   send-cameras:
     runs-on: ubuntu-latest
@@ -31,6 +40,19 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           API_KEY: ${{ secrets.API_KEY }}
+          MAP_URL: "https://bmercer-xyz.github.io/Bens_SAPOL_Bot/"
           # Optional: override User-Agent if needed
           SAPOL_USER_AGENT: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         run: python send_speed_cameras.py
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

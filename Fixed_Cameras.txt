@@ -1,0 +1,595 @@
+
+Park Terrace, SALISBURY
+PAC
+
+Park Terrace, SALISBURY
+PAC
+
+Kensington Road/Portrush Road, MARRYATVILLE
+I/section
+
+King William Road/Sir Edwin Smith Avenue, NORTH ADELAIDE
+I/section
+
+Tapleys Hill Road/West Lakes Boulevard SEATON
+I/section
+
+Greenhill Road/Hutt Road, ADELAIDE
+I/section
+
+Portrush Road, TOORAK GARDENS
+PAC
+
+Portrush Road, KENSINGTON
+PAC
+
+North East Road/Ascot Avenue, VALE PARK
+I/section
+
+Anzac Highway/Marion Road, PLYMPTON
+I/section
+
+North East Road/Sudholz Road, GILLES PLAINS
+I/section
+
+Sudholz Road/North East Road, GILLES PLAINS
+I/section
+
+Lower Nth East Road/Darley Road, PARADISE
+I/section
+
+Grand Junction Road/Walkleys Road, WALKLEY HEIGHTS
+I/section
+
+The Grove Way/Atlantis Drive, GOLDEN GROVE
+I/section
+
+West Terrace/Hindley Street, ADELAIDE
+I/section
+
+Grand Junction Road/Main North Road, ENFIELD
+I/section
+
+Henley Beach Road/Holbrooks Road, UNDERDALE
+I/section
+
+Grand Junction Road/Hanson Road, OTTOWAY
+I/section
+
+Glover Avenue/West Terrace, ADELAIDE
+I/section
+
+Grand Junction Road/Addison Road, PENNINGTON
+I/section
+
+Goodwood Road/Cross Road, CUMBERLAND PARK
+I/section
+
+South Rd/Richmond Road, MILE END SOUTH
+I/section
+
+Henley Beach Road/Tapleys Hill Road, FULHAM
+I/section
+
+Panalatinga Road/Pimpala Road, WOODCROFT
+I/section
+
+Main South Road/Bains Road, MORPHETT VALE
+I/section
+
+Main South Road/Doctors Road, MORPHETT VALE
+I/section
+
+Adelaide Road/Maurice Road, MURRAY BRIDGE
+I/section
+
+Adelaide Road/Mannum Road, MURRAY BRIDGE
+I/section
+
+Playford Avenue/Elliott Street, WHYALLA
+I/section
+
+Norrie Avenue/Nicolson Avenue, WHYALLA PLAYFORD
+I/section
+
+Victoria Parade/Flinders Terrace, PORT AUGUSTA
+I/section
+
+Victoria Parade/Carlton Parade, PORT AUGUSTA
+I/section
+
+Commercial Street West/Wehl Street South, MOUNT GAMBIER
+I/section
+
+Commercial Street East/Crouch Street North, MOUNT GAMBIER
+I/section
+
+Sturt Street/Bay Road, MOUNT GAMBIER
+I/section
+
+Main North Road/Yorktown Road, ELIZABETH PARK
+I/section
+
+Diagonal Road/Oaklands Road, GLENGOWRIE
+I/section
+
+Adelaide Road/South Eastern Freeway, LITTLEHAMPTON
+I/section
+
+South Road/Ashwin Parade, TORRENSVILLE
+I/section
+
+Payneham Road/Nelson Street, STEPNEY
+I/section
+
+Payneham Road/Lower Portrush Road, MARDEN
+I/section
+
+Main South Road/Black Road, O'HALLORAN HILL
+I/section
+
+Anzac Highway/Cross Road, PLYMPTON
+I/section
+
+Marion Road/Sturt Road, MITCHELL PARK
+I/section
+
+Waterloo Corner Road/Bagster Road, SALISBURY NORTH
+I/section
+
+Bridge Road/Montague Road, INGLE FARM
+I/section
+
+Churchill Road/Regency Road, PROSPECT
+I/section
+
+Glynburn Road/Kensington Road, KENSINGTON GARDENS
+I/section
+
+Sir Donald Bradman Drive/Brooker Terrace, HILTON
+I/section
+
+Montefiore Road/War Memorial Drive, NORTH ADELAIDE
+I/section
+
+Main North Road/Fairfield Road, ELIZABETH GROVE
+I/section
+
+Sturt Road/Marion Road, BEDFORD PARK
+I/section
+
+Commercial Road/Grand Junction Road, PORT ADELAIDE
+I/section
+
+North Terrace/Frome Road, ADELAIDE
+I/section
+
+Bridge Road/McIntyre Road, GULFVIEW HEIGHTS
+I/section
+
+Grange Road/Findon Road, FINDON
+I/section
+
+Prospect Road/Fitzroy Terrace, NORTH ADELAIDE
+I/section
+
+Regency Road/Main North Road, PROSPECT
+I/section
+
+Torrens Road/South Road, RENOWN PARK
+I/section
+
+Yorktown Road/Main North Road, ELIZABETH EAST
+I/section
+
+Grand Junction Road/Main North Road, GEPPS CROSS
+I/section
+
+Salisbury Highway/Kings Road, PARAFIELD GARDENS
+I/section
+
+Anzac Highway/Morphett Road, CAMDEN PARK
+I/section
+
+Grote Street/West Terrace, ADELAIDE
+I/section
+
+South Road/Torrens Road, RENOWN PARK
+I/section
+
+Main North Road/Regency Road, ENFIELD
+I/section
+
+Kings Road/Salisbury Highway, SALISBURY DOWNS
+I/section
+
+Brighton Road/Sturt Road, BRIGHTON
+I/section
+
+Dequetteville Terrace/Botanic Road, ADELAIDE
+I/section
+
+Hampstead Road/Grand Junction Road, CLEARVIEW
+I/section
+
+Port Road/Woodville Road, WOODVILLE SOUTH
+I/section
+
+Stephen Terrace/Payneham Road, ST PETERS
+I/section
+
+Main North Road/Frost Road, SALISBURY SOUTH
+I/section
+
+West Terrace/Hindley Street, ADELAIDE
+I/section
+
+Montacute Road/Glynburn Road, HECTORVILLE
+I/section
+
+Cross Road/Goodwood Road, WESTBOURNE PARK
+I/section
+
+Portrush Road/Magill Road, NORWOOD
+I/section
+
+Fitzroy Terrace/Prospect Road, FITZROY
+I/section
+
+Marion Road/Cross Road, PLYMPTON PARK
+I/section
+
+North East Road/Reservoir Road, MODBURY
+I/section
+
+Golden Grove Road/Milne Road, MODBURY HEIGHTS
+I/section
+
+Findon Road/Balcombe Avenue, FINDON
+I/section
+
+Goodwood Road/Cross Road, KINGS PARK
+I/section
+
+Morphett Road/Sturt Road, DOVER GARDENS
+I/section
+
+North East Road/Sudholz Road, HOLDEN HILL
+I/section
+
+Magill Road/Portrush Road, BEULAH PARK
+I/section
+
+Leader Street, GOODWOOD
+Rail
+
+Leader Street, FORESTVILLE
+Rail
+
+Cormack Road, DRY CREEK
+Rail
+
+Cormack Road, DRY CREEK
+Rail
+
+Commercial Road, SALISBURY
+PAC
+
+Commercial Road, EDINBURGH
+Rail
+
+Woodville Road, WOODVILLE
+PAC
+
+Woodville Road, WOODVILLE
+Rail
+
+David Terrace, KILKENNY
+PAC
+
+Kilkenny Road, WOODVILLE PARK
+Rail
+
+Womma Road, ELIZABETH NORTH
+Rail
+
+Womma Road, DAVOREN PARK
+Rail
+
+South Road, BLACKFOREST
+PAC
+
+Portrush Road, TRINITY GARDENS
+PAC
+
+South Eastern Freeway, CRAFERS
+Mid Block
+
+Montague Road, INGLE FARM
+Mid Block
+
+Frederick Road, ROYAL PARK
+Mid Block
+
+Greenhill Road/Anzac Highway, WAYVILLE
+I/section
+
+Magill Road/Glynburn Road, ST MORRIS
+I/section
+
+Lower North East Road/Darley Road, PARADISE
+I/section
+
+Regency Road/Prospect Road, PROSPECT
+I/section
+
+Tapleys Hill Road/Grange Road, SEATON
+I/section
+
+Tapleys Hill Road, WEST BEACH
+Mid Block
+
+Chandlers Hill Road, HAPPY VALLEY
+Mid Block
+
+Regency Road, KILKENNY
+PAC
+
+Philip Highway, ELIZABETH
+PAC
+
+Cross Road, KINGSWOOD
+Mid Block
+
+Grange Road, KIDMAN PARK
+Mid Block
+
+South Road, CLOVELLY PARK
+PAC
+
+Shepherds Hill Road, EDEN HILLS
+PAC
+
+Torrens Road, WOODVILLE NORTH
+PAC
+
+Port Wakefield Road, PARALOWIE
+Mid Block
+
+West Lakes Boulevard, WEST LAKES
+Mid Block
+
+Diagonal Road, GLENELG EAST
+PAC
+
+Portrush Road, LINDEN PARK
+PAC
+
+Seacombe Road, SEACOMBE HEIGHTS
+PAC
+
+Goodwood Road, GOODWOOD
+PAC
+
+South Road, MARLESTON
+PAC
+
+Diagonal Road, WARRADALE
+PAC
+
+Hancock Road, ST AGNES
+PAC
+
+Marion Road, MARION
+PAC
+
+Bains Road, MORPHETT VALE
+PAC
+
+St Bernards Road, MAGILL
+PAC
+
+Salisbury Highway/Elder Smith Road, MAWSON LAKES
+I/Section
+
+Prospect Road, PROSPECT
+PAC
+
+Kensington Road, KENSINGTON PARK
+PAC
+
+Main North Road / Kings Road, PARAFIELD
+I/Section
+
+Hampstead Road/Folland Avenue, CLEARVIEW
+I/Section
+
+Elder Smith Road/Main North Road, PARAFIELD
+I/Section
+
+Main North Road/Womma Road, ELIZABETH NORTH
+I/Section
+
+Tapleys Hill Road/Old Port Road, QUEENSTOWN
+I/Section
+
+Montague Rd/Walkleys Rd, INGLE FARM
+I/Section
+
+Port Wakefield Road/Globe Derby Drive, GLOBE DERBY PARK
+I/Section
+
+Stephen Terrace, WALKERVILLE
+PAC
+
+Marion Road, ASCOT PARK
+PAC
+
+Beach Road, MORPHETT VALE
+PAC
+
+Ascot Avenue, VALE PARK
+PAC
+
+Goodwood Road, PASADENA
+PAC
+
+Kensington Road, Kensington
+PAC
+
+Port Wakefield Highway, TWO WELLS
+P2P
+
+Port Wakefield Highway, PORT WAKEFIELD
+P2P
+
+Port Wakefield Highway, TWO WELLS TO PORT WAKEFIELD
+P2P
+
+Port Wakefield Highway, PORT WAKEFIELD
+P2P
+
+Port Wakefield Highway, TWO WELLS
+P2P
+
+Port Wakefield Highway, PORT WAKEFIELD TO TWO WELLS
+P2P
+
+Dukes Highway, KI KI
+P2P
+
+Dukes Highway, COONALPYN
+P2P
+
+Dukes Highway, KI KI TO COONALPYN
+P2P
+
+Dukes Highway COONALPYN
+P2P
+
+Dukes Highway, KI KI
+P2P
+
+Dukes Highway COONALPYN TO KI KI
+P2P
+
+Victor Harbor Road, MCLAREN VALE
+P2P
+
+Victor Harbor Road, WILLUNGA
+P2P
+
+Victor Harbor Road, MCLAREN VALE TO WILLUNGA
+P2P
+
+Victor Harbor Road, WHITES VALLEY
+P2P
+
+Victor Harbor Road, TATACHILLA
+P2P
+
+Victor Harbor Road, WHITES VALLEY TO TATACHILLA
+P2P
+
+South Eastern Freeway, NAIRNE
+P2P
+
+South Eastern Freeway, CALLINGTON
+P2P
+
+South Eastern Freeway, NAIRNE TO CALLINGTON
+P2P
+
+South Eastern Freeway, CALLINGTON
+P2P
+
+South Eastern Freeway, MOUNT BARKER SUMMIT
+P2P
+
+South Eastern Freeway, CALLINGTON TO MOUNT BARKER SUMMIT
+P2P
+
+Sturt Highway, LOWBANK
+P2P
+
+Sturt Highway, WIGLEY FLAT
+P2P
+
+Sturt Highway, LOWBANK TO WIGLEY FLAT
+P2P
+
+Sturt Highway, WOOLPUNDA
+P2P
+
+Sturt Highway, KANNI
+P2P
+
+Sturt Highway, WOOLPUNDA TO KANNI
+P2P
+
+Northern Expressway, VIRGINIA
+P2P
+
+Northern Expressway, WARD BELT
+P2P
+
+Northern Expressway, VIRGINIA TO WARD BELT
+P2P
+
+Northern Expressway, BUCHFELDE
+P2P
+
+Northern Expressway, WATERLOO CORNER
+P2P
+
+Northern Expressway, BUCHFELDE TO WATERLOO CORNER
+P2P
+
+South Eastern Freeway, LEAWOOD GARDENS
+Mid Block
+
+South Eastern Freeway, LEAWOOD GARDENS
+Mid Block
+
+South Eastern  Freeway, LEAWOOD GARDENS
+Mid Block
+
+North South Motorway, Regency Park
+MPDC
+
+Southern Expressway, Darlington
+MPDC
+
+Port Road, Hindmarsh
+MPDC
+
+South Road, Torrensville
+MPDC
+
+
+Port Wakefield Road, Gepps Cross
+MPDC
+
+Decommissioned cameras
+
+
+Main North Road/Yorketown Road M/S, ELIZABETH PARK
+I/Section
+
+Glover Avenue, ADELAIDE
+Mid Block
+
+North Terrace/Frome Road, ADELAIDE 
+I/Section
+
+Torrens Road/South Road, RENOWN PARK 
+I/Section
+
+South Road/Torrens Road, RENOWN PARK 
+I/Section
+
+South Eastern Freeway, LEAWOOD GARDENS
+Mid Block
+
+Magill Road/Glynburn Road, HECTORVILLE
+I/Section

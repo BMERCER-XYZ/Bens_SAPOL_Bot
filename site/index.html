@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adelaide Camera Watch</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="kicker">SAPOL road safety</p>
+        <h1>Adelaide Camera Watch</h1>
+        <p class="subhead">A clear view of scheduled mobile and permanent camera locations.</p>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch map theme">Switch to light</button>
+    </header>
+
+    <section class="toolbar" aria-label="Map controls">
+      <div class="date-control">
+        <button class="icon-button" id="previous-day" type="button" aria-label="Show previous available day">&#8592;</button>
+        <label for="date-select">Camera schedule</label>
+        <select id="date-select"></select>
+        <button class="icon-button" id="next-day" type="button" aria-label="Show next available day">&#8594;</button>
+      </div>
+      <label class="switch-control">
+        <input id="fixed-toggle" type="checkbox" checked>
+        <span class="switch" aria-hidden="true"></span>
+        <span>Fixed cameras</span>
+      </label>
+      <div class="toolbar-note" id="updated-label">Loading latest schedule...</div>
+    </section>
+
+    <section class="content-grid">
+      <div id="map" aria-label="Interactive camera map"></div>
+      <aside class="details-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="kicker">Selected day</p>
+            <h2 id="selected-date">Loading...</h2>
+          </div>
+          <span class="count-badge" id="mobile-count">0</span>
+        </div>
+        <p class="panel-copy">Mobile cameras scheduled for this day. Fixed locations remain available as a separate layer.</p>
+        <div class="legend" id="legend"></div>
+        <div class="camera-list" id="camera-list"></div>
+      </aside>
+    </section>
+
+    <footer>Map data: South Australia Police and OpenStreetMap contributors. CARTO basemap.</footer>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
