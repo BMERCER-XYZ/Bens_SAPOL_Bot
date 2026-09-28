@@ -2,10 +2,10 @@ import datetime
 import json
 import math
 import os
-import random
 import re
 import tempfile
 import time
+import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 
@@ -17,7 +17,7 @@ from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
 user_location = (-34.9206, 138.5210)
-SAPOL_URL = "https://www.police.sa.gov.au/your-safety/road-safety/traffic-camera-locations"
+RSS_URL = "https://speedcameras.com.au/feed/"
 tz = pytz.timezone("Australia/Adelaide")
 ADELAIDE_CBD_COORDS = (-34.9285, 138.6007)
 GREETING_TEMPLATE = "Good morning! :) Here are the speed camera locations for {today}:"
@@ -25,35 +25,6 @@ GREETING_TEMPLATE = "Good morning! :) Here are the speed camera locations for {t
 
 def _adelaide_today() -> str:
     return datetime.datetime.now(tz).strftime("%d/%m/%Y")
-
-
-def fetch_with_playwright(url: str, timeout: int = 30, max_retries: int = 3) -> Optional[str]:
-    try:
-        from playwright.sync_api import sync_playwright
-    except Exception:
-        print("⚠️ Playwright is not installed.")
-        return None
-    for attempt in range(max_retries):
-        try:
-            with sync_playwright() as playwright:
-                browser = playwright.chromium.launch(headless=True)
-                context = browser.new_context(user_agent=os.getenv("SAPOL_USER_AGENT", "Mozilla/5.0"))
-                page = context.new_page()
-                page.set_default_navigation_timeout(timeout * 1000)
-                page.goto(url)
-                try:
-                    page.wait_for_load_state("networkidle", timeout=5000)
-                except Exception:
-                    pass
-                html = page.content()
-                browser.close()
-            if "Just a moment" not in html and "cf-browser-verification" not in html:
-                return html
-            print(f"⚠️ Cloudflare challenge detected (attempt {attempt + 1}); retrying")
-            time.sleep(2 + random.random() * 2)
-        except Exception as error:
-            print(f"⚠️ Playwright fetch failed (attempt {attempt + 1}): {error}")
-    return None
 
 
 def get_region(lat: float, lon: float) -> str:
@@ -121,22 +92,34 @@ def _normalise_date(value: str) -> Optional[str]:
 
 
 def _fetch_camera_names_by_date() -> Dict[str, List[str]]:
-    html = fetch_with_playwright(SAPOL_URL)
-    if not html:
+    try:
+        response = requests.get(RSS_URL, timeout=30)
+        response.raise_for_status()
+        feed = ET.fromstring(response.content)
+    except (requests.RequestException, ET.ParseError) as error:
+        print(f"⚠️ RSS feed fetch failed: {error}")
         return {}
+
     cams_by_date: Dict[str, List[str]] = {}
-    date_pattern = re.compile(r"^(\d{1,2}/\d{1,2}/\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2} [A-Za-z]+ \d{4})\s*[-–—:,]?\s*(.+)$")
-    for li in BeautifulSoup(html, "html.parser").find_all("li"):
-        data_value = li.get("data-value")
-        text = li.get_text(" ", strip=True)
-        date_value = _normalise_date(data_value or "")
-        name = text[len(data_value):].lstrip(" -–—:,\t") if data_value and text.startswith(data_value) else text
+    content_namespace = "{http://purl.org/rss/1.0/modules/content/}encoded"
+    for item in feed.findall("./channel/item"):
+        link = item.findtext("link", default="")
+        date_match = re.search(r"speed-cameras-(\d{8})", link)
+        date_value = None
+        if date_match:
+            date_value = datetime.datetime.strptime(date_match.group(1), "%Y%m%d").strftime("%Y-%m-%d")
         if not date_value:
-            match = date_pattern.match(text)
-            if match:
-                date_value, name = _normalise_date(match.group(1)), match.group(2)
-        if date_value and name:
-            cams_by_date.setdefault(date_value, []).append(name.strip())
+            description = item.findtext("description", default="")
+            date_match = re.search(r"\b\d{1,2} [A-Za-z]+ \d{4}\b", description)
+            date_value = _normalise_date(date_match.group(0)) if date_match else None
+
+        encoded_content = item.findtext(content_namespace, default="")
+        if not date_value or not encoded_content:
+            continue
+        for li in BeautifulSoup(encoded_content, "html.parser").find_all("li"):
+            name = re.sub(r"\s*\([^)]*\)\s*$", "", li.get_text(" ", strip=True)).strip()
+            if name:
+                cams_by_date.setdefault(date_value, []).append(name)
     return cams_by_date
 
 
