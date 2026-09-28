@@ -279,14 +279,14 @@ def send_to_discord(cameras, image_path: Optional[str] = None, date_str: Optiona
     date_for_message = date_str or _adelaide_today()
     map_url = os.getenv("MAP_URL", "https://bmercer-xyz.github.io/Bens_SAPOL_Bot/")
     if not cameras:
-        message = f"No metropolitan cameras found for {date_for_message}.\n\n[https://bmercer-xyz.github.io/Bens_SAPOL_Bot]({map_url})"
+        message = f"No metropolitan cameras found for {date_for_message}.\n\n{map_url}"
         requests.post(webhook, json={"content": message})
         return
     message = f"**{GREETING_TEMPLATE.format(today=date_for_message)}**\n"
     for camera in cameras:
         distance = camera.get("distance")
         message += f"• {camera['name']} — `{distance:.1f} km`\n" if distance is not None else f"• {camera['name']} — `distance unknown`\n"
-    message += f"\n[https://bmercer-xyz.github.io/Bens_SAPOL_Bot]({map_url})"
+    message += f"\n{map_url}"
     files = {}
     opened_file = None
     if image_path and os.path.exists(image_path):
