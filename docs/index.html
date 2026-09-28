@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Adelaide Camera Watch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
@@ -12,11 +15,18 @@
   <main class="app-shell">
     <header class="topbar">
       <div>
-        <p class="kicker">SAPOL road safety</p>
+        <div class="ascii-mark" aria-hidden="true">+--------------------------------------------------+
+| ADELAIDE CAMERA WATCH // FIELD CONSOLE           |
++--------------------------------------------------+</div>
+        <p class="kicker"><span class="prompt">$</span> sapol / road-safety / live-schedule</p>
         <h1>Adelaide Camera Watch</h1>
-        <p class="subhead">A clear view of scheduled mobile and permanent camera locations.</p>
+        <p class="subhead">A clear view of scheduled mobile and permanent camera locations<span class="cursor">_</span></p>
       </div>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch map theme">Switch to light</button>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>FEED CONNECTED</span>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch map theme">Switch to light</button>
+      </div>
     </header>
 
     <section class="toolbar" aria-label="Map controls">
@@ -31,7 +41,14 @@
         <span class="switch" aria-hidden="true"></span>
         <span>Fixed cameras</span>
       </label>
-      <div class="toolbar-note" id="updated-label">Loading latest schedule...</div>
+      <label class="display-control" for="mobile-mode">
+        <span>Mobile display</span>
+        <select id="mobile-mode">
+          <option value="points">Point markers</option>
+          <option value="lines">Road lines</option>
+        </select>
+      </label>
+      <div class="toolbar-note"><span class="prompt">&gt;</span> <span id="updated-label">Loading latest schedule...</span></div>
     </section>
 
     <section class="content-grid">

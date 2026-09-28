@@ -1,9 +1,11 @@
 const state = {
   data: null,
   date: null,
-  dark: localStorage.getItem("camera-theme") === "dark",
+  dark: localStorage.getItem("camera-theme") !== "light",
+  mobileMode: localStorage.getItem("camera-mode") || "points",
   fixedVisible: true,
   mobileLayer: L.layerGroup(),
+  mobileLineLayer: L.layerGroup(),
   fixedLayer: L.layerGroup()
 };
 
@@ -53,6 +55,24 @@ function addCameraMarkers(cameras, layer, fixed = false) {
   });
 }
 
+function addCameraLines(cameras, layer) {
+  cameras.forEach(camera => {
+    if (camera.geojson) {
+      L.geoJSON(camera.geojson, {
+        style: {
+          color: "#e53935",
+          weight: 5,
+          opacity: 0.9
+        }
+      })
+        .bindPopup(popupFor(camera))
+        .addTo(layer);
+    } else {
+      addCameraMarkers([camera], layer);
+    }
+  });
+}
+
 function renderLegend() {
   const legend = document.getElementById("legend");
   legend.innerHTML = `<span class="legend-item"><i class="legend-dot"></i> Mobile schedule</span><span class="legend-item"><i class="legend-dot fixed"></i> Fixed location</span>`;
@@ -73,10 +93,16 @@ function renderList(cameras) {
 function renderDate() {
   const cameras = state.data.dates[state.date] || [];
   state.mobileLayer.clearLayers();
+  state.mobileLineLayer.clearLayers();
   state.fixedLayer.clearLayers();
-  addCameraMarkers(cameras, state.mobileLayer);
+  if (state.mobileMode === "lines") {
+    addCameraLines(cameras, state.mobileLineLayer);
+  } else {
+    addCameraMarkers(cameras, state.mobileLayer);
+  }
   addCameraMarkers(state.data.fixed_cameras, state.fixedLayer, true);
-  state.mobileLayer.addTo(map);
+  const activeMobileLayer = state.mobileMode === "lines" ? state.mobileLineLayer : state.mobileLayer;
+  activeMobileLayer.addTo(map);
   if (state.fixedVisible) state.fixedLayer.addTo(map);
   document.getElementById("selected-date").textContent = new Date(`${state.date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long" });
   document.getElementById("mobile-count").textContent = cameras.length;
@@ -101,6 +127,7 @@ function initialise(data) {
   const select = document.getElementById("date-select");
   select.innerHTML = dates.map(date => `<option value="${date}">${new Date(`${date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</option>`).join("");
   select.value = state.date;
+  document.getElementById("mobile-mode").value = state.mobileMode;
   document.getElementById("updated-label").textContent = `${data.all_cameras.length} total mobile locations | Updated ${new Date(data.generated_at).toLocaleString("en-AU")}`;
   setTheme(state.dark);
   renderLegend();
@@ -112,6 +139,11 @@ function initialise(data) {
 }
 
 document.getElementById("theme-toggle").addEventListener("click", () => setTheme(!state.dark));
+document.getElementById("mobile-mode").addEventListener("change", event => {
+  state.mobileMode = event.target.value;
+  localStorage.setItem("camera-mode", state.mobileMode);
+  renderDate();
+});
 document.getElementById("fixed-toggle").addEventListener("change", event => {
   state.fixedVisible = event.target.checked;
   if (state.fixedVisible) state.fixedLayer.addTo(map); else map.removeLayer(state.fixedLayer);

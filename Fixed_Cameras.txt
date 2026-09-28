@@ -1,595 +1,986 @@
+Park Terrace, SALISBURY
+PAC
+Longitude: 138.648866086406
+Latitude: -34.766880956503
 
 Park Terrace, SALISBURY
 PAC
-
-Park Terrace, SALISBURY
-PAC
+Longitude: 138.648866086406
+Latitude: -34.766880956503
 
 Kensington Road/Portrush Road, MARRYATVILLE
 I/section
+Longitude: 138.641464420893
+Latitude: -34.926994256641
 
 King William Road/Sir Edwin Smith Avenue, NORTH ADELAIDE
 I/section
+Longitude: 138.600437216933
+Latitude: -34.913410704993
 
 Tapleys Hill Road/West Lakes Boulevard SEATON
 I/section
+Longitude: 138.51279997515513
+Latitude: -34.87940395276517
 
 Greenhill Road/Hutt Road, ADELAIDE
 I/section
+Longitude: 138.603750220824
+Latitude: -34.940979958124
 
 Portrush Road, TOORAK GARDENS
 PAC
+Longitude: 138.641879361829
+Latitude: -34.933128222138
 
 Portrush Road, KENSINGTON
 PAC
+Longitude: 138.641142488245
+Latitude: -34.922493944576
 
 North East Road/Ascot Avenue, VALE PARK
 I/section
+Longitude: 138.62359182305
+Latitude: -34.881593958684
 
 Anzac Highway/Marion Road, PLYMPTON
 I/section
+Longitude: 138.563464273961
+Latitude: -34.958275749794
 
 North East Road/Sudholz Road, GILLES PLAINS
 I/section
+Longitude: 138.65535052112
+Latitude: -34.857270316179
 
 Sudholz Road/North East Road, GILLES PLAINS
 I/section
+Longitude: 138.654679916173
+Latitude: -34.856489979951
 
 Lower Nth East Road/Darley Road, PARADISE
 I/section
+Longitude: 138.671413086667
+Latitude: -34.876450165117
 
 Grand Junction Road/Walkleys Road, WALKLEY HEIGHTS
 I/section
+Longitude: 138.645071114903
+Latitude: -34.846265105088
 
 The Grove Way/Atlantis Drive, GOLDEN GROVE
 I/section
+Longitude: 138.702482591902
+Latitude: -34.780849198658
 
 West Terrace/Hindley Street, ADELAIDE
 I/section
+Longitude: 138.58742441720696
+Latitude: -34.92342017202204
 
 Grand Junction Road/Main North Road, ENFIELD
 I/section
+Longitude: 138.600184055474
+Latitude: -34.848159220875
 
 Henley Beach Road/Holbrooks Road, UNDERDALE
 I/section
+Longitude: 138.548261791737
+Latitude: -34.924733559312
 
 Grand Junction Road/Hanson Road, OTTOWAY
 I/section
+Longitude: 138.546660829514
+Latitude: -34.85054483257414
 
 Glover Avenue/West Terrace, ADELAIDE
 I/section
+Longitude: 138.587731285229
+Latitude: -34.929430843073
 
 Grand Junction Road/Addison Road, PENNINGTON
 I/section
+Longitude: 138.5289489990839
+Latitude: -34.851261901340166
 
 Goodwood Road/Cross Road, CUMBERLAND PARK
 I/section
+Longitude: 138.591360226571
+Latitude: -34.973676938744
 
 South Rd/Richmond Road, MILE END SOUTH
 I/section
+Longitude: 138.574553568299
+Latitude: -34.941889563669
 
 Henley Beach Road/Tapleys Hill Road, FULHAM
 I/section
+Longitude: 138.518183
+Latitude: -34.926493
 
 Panalatinga Road/Pimpala Road, WOODCROFT
 I/section
+Longitude: 138.546787998747
+Latitude: -35.09463469093
 
 Main South Road/Bains Road, MORPHETT VALE
 I/section
+Longitude: 138.523210885772
+Latitude: -35.120225499725
 
 Main South Road/Doctors Road, MORPHETT VALE
 I/section
+Longitude: 138.524
+Latitude: -35.1258
 
 Adelaide Road/Maurice Road, MURRAY BRIDGE
 I/section
+Longitude: 139.250221550377
+Latitude: -35.129483726348
 
 Adelaide Road/Mannum Road, MURRAY BRIDGE
 I/section
+Longitude: 139.250221550377
+Latitude: -35.129483726348
 
 Playford Avenue/Elliott Street, WHYALLA
 I/section
+Longitude: 137.571613498347
+Latitude: -33.026125914284
 
 Norrie Avenue/Nicolson Avenue, WHYALLA PLAYFORD
 I/section
+Longitude: 137.561439115294
+Latitude: -33.028049138774
 
 Victoria Parade/Flinders Terrace, PORT AUGUSTA
 I/section
+Longitude: 137.775023716058
+Latitude: -32.487290395066
 
 Victoria Parade/Carlton Parade, PORT AUGUSTA
 I/section
+Longitude: 137.774046994916
+Latitude: -32.497298171228
 
 Commercial Street West/Wehl Street South, MOUNT GAMBIER
 I/section
+Longitude: 140.752263592232
+Latitude: -37.819362833972
 
 Commercial Street East/Crouch Street North, MOUNT GAMBIER
 I/section
+Longitude: 140.790218164556
+Latitude: -37.831479240214
 
 Sturt Street/Bay Road, MOUNT GAMBIER
 I/section
+Longitude: 140.790704260616
+Latitude: -37.834007242706
 
 Main North Road/Yorktown Road, ELIZABETH PARK
 I/section
+Longitude: 138.673300523624
+Latitude: -34.7196996071
 
 Diagonal Road/Oaklands Road, GLENGOWRIE
 I/section
+Longitude: 138.528261864171
+Latitude: -34.993513871503
 
 Adelaide Road/South Eastern Freeway, LITTLEHAMPTON
 I/section
+Longitude: 138.868211880656
+Latitude: -35.053924073574
 
 South Road/Ashwin Parade, TORRENSVILLE
 I/section
+Longitude: 138.56551984060957
+Latitude: -34.91467271278584
 
 Payneham Road/Nelson Street, STEPNEY
 I/section
+Longitude: 138.624715989786
+Latitude: -34.913331478796
 
 Payneham Road/Lower Portrush Road, MARDEN
 I/section
+Longitude: 138.63505269048
+Latitude: -34.893309806736
 
 Main South Road/Black Road, O'HALLORAN HILL
 I/section
+Longitude: 138.559780240722
+Latitude: -35.038373630838
 
 Anzac Highway/Cross Road, PLYMPTON
 I/section
+Longitude: 138.563464273961
+Latitude: -34.958275749794
 
 Marion Road/Sturt Road, MITCHELL PARK
 I/section
+Longitude: 138.558968933559
+Latitude: -35.017120440033
 
 Waterloo Corner Road/Bagster Road, SALISBURY NORTH
 I/section
+Longitude: 138.623476163997
+Latitude: -34.751222968995
 
 Bridge Road/Montague Road, INGLE FARM
 I/section
+Longitude: 138.635023045215
+Latitude: -34.824357184938
 
 Churchill Road/Regency Road, PROSPECT
 I/section
+Longitude: 138.584652302981
+Latitude: -34.882843991961
 
 Glynburn Road/Kensington Road, KENSINGTON GARDENS
 I/section
+Longitude: 138.66336434839
+Latitude: -34.925794423599
 
 Sir Donald Bradman Drive/Brooker Terrace, HILTON
 I/section
+Longitude: 138.56133055454805
+Latitude: -34.9322621740446
 
 Montefiore Road/War Memorial Drive, NORTH ADELAIDE
 I/section
+Longitude: 138.59299033641082
+Latitude: -34.91757297654297
 
 Main North Road/Fairfield Road, ELIZABETH GROVE
 I/section
+Longitude: 138.675833944967
+Latitude: -34.738017048137
 
 Sturt Road/Marion Road, BEDFORD PARK
 I/section
+Longitude: 138.559365950965
+Latitude: -35.021456385784
 
 Commercial Road/Grand Junction Road, PORT ADELAIDE
 I/section
+Longitude: 138.50920745376234
+Latitude: -34.85224254772851
 
 North Terrace/Frome Road, ADELAIDE
 I/section
+Longitude: 138.613437589396
+Latitude: -34.920428008934
 
 Bridge Road/McIntyre Road, GULFVIEW HEIGHTS
 I/section
+Longitude: 138.672028283457
+Latitude: -34.808811649629
 
 Grange Road/Findon Road, FINDON
 I/section
+Longitude: 138.53189574511435
+Latitude: -34.90541404254417
 
 Prospect Road/Fitzroy Terrace, NORTH ADELAIDE
 I/section
+Longitude: 138.594696826648
+Latitude: -34.897801019885
 
 Regency Road/Main North Road, PROSPECT
 I/section
+Longitude: 138.601442219972
+Latitude: -34.895072519075
 
 Torrens Road/South Road, RENOWN PARK
 I/section
+Longitude: 138.579424693213
+Latitude: -34.894039175396
 
 Yorktown Road/Main North Road, ELIZABETH EAST
 I/section
+Longitude: 138.67553198103
+Latitude: -34.730346624162
 
 Grand Junction Road/Main North Road, GEPPS CROSS
 I/section
+Longitude: 138.595927153187
+Latitude: -34.848264671781
 
 Salisbury Highway/Kings Road, PARAFIELD GARDENS
 I/section
+Longitude: 138.618418179192
+Latitude: -34.787996872725
 
 Anzac Highway/Morphett Road, CAMDEN PARK
 I/section
+Longitude: 138.540810722352
+Latitude: -34.97295080868
 
 Grote Street/West Terrace, ADELAIDE
 I/section
+Longitude: 138.587731285229
+Latitude: -34.929430843073
 
 South Road/Torrens Road, RENOWN PARK
 I/section
+Longitude: 138.579424693213
+Latitude: -34.894039175396
 
 Main North Road/Regency Road, ENFIELD
 I/section
+Longitude: 138.601866604528
+Latitude: -34.871544955786
 
 Kings Road/Salisbury Highway, SALISBURY DOWNS
 I/section
+Longitude: 138.626269120083
+Latitude: -34.779154604664
 
 Brighton Road/Sturt Road, BRIGHTON
 I/section
+Longitude: 138.523139101433
+Latitude: -35.0188414611
 
 Dequetteville Terrace/Botanic Road, ADELAIDE
 I/section
+Longitude: 138.6149748270321
+Latitude: -34.919577888212
 
 Hampstead Road/Grand Junction Road, CLEARVIEW
 I/section
+Longitude: 138.613263172194
+Latitude: -34.847515682281
 
 Port Road/Woodville Road, WOODVILLE SOUTH
 I/section
+Longitude: 138.533283233365
+Latitude: -34.88296021465
 
 Stephen Terrace/Payneham Road, ST PETERS
 I/section
+Longitude: 138.623633263931
+Latitude: -34.904899722557
 
 Main North Road/Frost Road, SALISBURY SOUTH
 I/section
+Longitude: 138.650418062333
+Latitude: -34.787532947437
 
 West Terrace/Hindley Street, ADELAIDE
 I/section
+Longitude: 138.58742441720696
+Latitude: -34.92342017202204
 
 Montacute Road/Glynburn Road, HECTORVILLE
 I/section
+Longitude: 138.665420060421
+Latitude: -34.889063859847
 
 Cross Road/Goodwood Road, WESTBOURNE PARK
 I/section
+Longitude: 138.591064616965
+Latitude: -34.969808021646
 
 Portrush Road/Magill Road, NORWOOD
 I/section
+Longitude: 138.640933202026
+Latitude: -34.920911951859
 
 Fitzroy Terrace/Prospect Road, FITZROY
 I/section
+Longitude: 138.59299431024
+Latitude: -34.898765986919
 
 Marion Road/Cross Road, PLYMPTON PARK
 I/section
+Longitude: 138.555533624299
+Latitude: -34.974808169718
 
 North East Road/Reservoir Road, MODBURY
 I/section
+Longitude: 138.688519041812
+Latitude: -34.839708822732
 
 Golden Grove Road/Milne Road, MODBURY HEIGHTS
 I/section
+Longitude: 138.69531937426
+Latitude: -34.811889048752
 
 Findon Road/Balcombe Avenue, FINDON
 I/section
+Longitude: 138.53175359217232
+Latitude: -34.895294077122486
 
 Goodwood Road/Cross Road, KINGS PARK
 I/section
+Longitude: 138.590487668553
+Latitude: -34.962166605394
 
 Morphett Road/Sturt Road, DOVER GARDENS
 I/section
+Longitude: 138.541521838765
+Latitude: -35.025421953669
 
 North East Road/Sudholz Road, HOLDEN HILL
 I/section
+Longitude: 138.665787985461
+Latitude: -34.85236435631
 
 Magill Road/Portrush Road, BEULAH PARK
 I/section
+Longitude: 138.640799871607
+Latitude: -34.917931520698
 
 Leader Street, GOODWOOD
 Rail
+Longitude: 138.58755238164
+Latitude: -34.948674529598
 
 Leader Street, FORESTVILLE
 Rail
+Longitude: 138.580041767438
+Latitude: -34.949055329728
 
 Cormack Road, DRY CREEK
 Rail
+Longitude: 138.580715315717
+Latitude: -34.839810454857
 
 Cormack Road, DRY CREEK
 Rail
+Longitude: 138.580715315717
+Latitude: -34.839810454857
 
 Commercial Road, SALISBURY
 PAC
+Longitude: 138.648459081072
+Latitude: -34.75737112713
 
 Commercial Road, EDINBURGH
 Rail
+Longitude: 138.643580704157
+Latitude: -34.750390581718
 
 Woodville Road, WOODVILLE
 PAC
+Longitude: 138.536986447183
+Latitude: -34.878912664988
 
 Woodville Road, WOODVILLE
 Rail
+Longitude: 138.536986447183
+Latitude: -34.878912664988
 
 David Terrace, KILKENNY
 PAC
+Longitude: 138.550552398809
+Latitude: -34.877801525654
 
 Kilkenny Road, WOODVILLE PARK
 Rail
+Longitude: 138.548453235968
+Latitude: -34.889722228299
 
 Womma Road, ELIZABETH NORTH
 Rail
+Longitude: 138.676467772609
+Latitude: -34.706257552801
 
 Womma Road, DAVOREN PARK
 Rail
+Longitude: 138.668133970148
+Latitude: -34.702707848007
 
 South Road, BLACKFOREST
 PAC
+Longitude: 138.572621981284
+Latitude: -34.961612544563
 
 Portrush Road, TRINITY GARDENS
 PAC
+Longitude: 138.640294268413
+Latitude: -34.911120540418
 
 South Eastern Freeway, CRAFERS
 Mid Block
+Longitude: 138.700632041689
+Latitude: -34.99617958722
 
 Montague Road, INGLE FARM
 Mid Block
+Longitude: 138.635023045215
+Latitude: -34.824357184938
 
 Frederick Road, ROYAL PARK
 Mid Block
+Longitude: 138.503602688975
+Latitude: -34.873585008089
 
 Greenhill Road/Anzac Highway, WAYVILLE
 I/section
+Longitude: 138.591668679934
+Latitude: -34.941768986537
 
 Magill Road/Glynburn Road, ST MORRIS
 I/section
+Longitude: 138.658011344072
+Latitude: -34.910985770417
 
 Lower North East Road/Darley Road, PARADISE
 I/section
+Longitude: 138.666338324053
+Latitude: -34.87371243099
 
 Regency Road/Prospect Road, PROSPECT
 I/section
+Longitude: 138.593840630655
+Latitude: -34.884685127592
 
 Tapleys Hill Road/Grange Road, SEATON
 I/section
+Longitude: 138.51460749219186
+Latitude: -34.90631573776927
 
 Tapleys Hill Road, WEST BEACH
 Mid Block
+Longitude: 138.5171100637139
+Latitude: -34.9384047816123
 
 Chandlers Hill Road, HAPPY VALLEY
 Mid Block
+Longitude: 138.562500622609
+Latitude: -35.066701567154
 
 Regency Road, KILKENNY
 PAC
+Longitude: 138.557347392296
+Latitude: -34.875794511696
 
 Philip Highway, ELIZABETH
 PAC
+Longitude: 138.667289875323
+Latitude: -34.724734059186
 
 Cross Road, KINGSWOOD
 Mid Block
+Longitude: 138.613146863122
+Latitude: -34.9652632303
 
 Grange Road, KIDMAN PARK
 Mid Block
+Longitude: 138.527406021429
+Latitude: -34.905790053047
 
 South Road, CLOVELLY PARK
 PAC
+Longitude: 138.575201996167
+Latitude: -34.998313155871
 
 Shepherds Hill Road, EDEN HILLS
 PAC
+Longitude: 138.601120485108
+Latitude: -35.027005523282
 
 Torrens Road, WOODVILLE NORTH
 PAC
+Longitude: 138.548439409854
+Latitude: -34.875180125275
 
 Port Wakefield Road, PARALOWIE
 Mid Block
+Longitude: 138.594443955736
+Latitude: -34.769565036879
 
 West Lakes Boulevard, WEST LAKES
 Mid Block
+Longitude: 138.503690485233
+Latitude: -34.879746695156
 
 Diagonal Road, GLENELG EAST
 PAC
+Longitude: 138.524905025245
+Latitude: -34.98878625781
 
 Portrush Road, LINDEN PARK
 PAC
+Longitude: 138.643054265511
+Latitude: -34.946828242133
 
 Seacombe Road, SEACOMBE HEIGHTS
 PAC
+Longitude: 138.547248135203
+Latitude: -35.028906582419
 
 Goodwood Road, GOODWOOD
 PAC
+Longitude: 138.589642602047
+Latitude: -34.951275852059
 
 South Road, MARLESTON
 PAC
+Longitude: 138.571213653883
+Latitude: -34.944225847204
 
 Diagonal Road, WARRADALE
 PAC
+Longitude: 138.535238292365
+Latitude: -35.003324143007
 
 Hancock Road, ST AGNES
 PAC
+Longitude: 138.719196552671
+Latitude: -34.826948511347
 
 Marion Road, MARION
 PAC
+Longitude: 138.557907312383
+Latitude: -35.006194046823
 
 Bains Road, MORPHETT VALE
 PAC
+Longitude: 138.541938286794
+Latitude: -35.114813810224
 
 St Bernards Road, MAGILL
 PAC
+Longitude: 138.67566438816
+Latitude: -34.907926611919
 
 Salisbury Highway/Elder Smith Road, MAWSON LAKES
 I/Section
+Longitude: 138.597155568336
+Latitude: -34.81179649447
 
 Prospect Road, PROSPECT
 PAC
+Longitude: 138.593840630655
+Latitude: -34.884685127592
 
 Kensington Road, KENSINGTON PARK
 PAC
+Longitude: 138.650758390696
+Latitude: -34.92644164704
 
 Main North Road / Kings Road, PARAFIELD
 I/Section
+Longitude: 138.639054069901
+Latitude: -34.800458557697
 
 Hampstead Road/Folland Avenue, CLEARVIEW
 I/Section
+Longitude: 138.618022670242
+Latitude: -34.857199278345
 
 Elder Smith Road/Main North Road, PARAFIELD
 I/Section
+Longitude: 138.631139257285
+Latitude: -34.808910654303
 
 Main North Road/Womma Road, ELIZABETH NORTH
 I/Section
+Longitude: 138.67582439849
+Latitude: -34.711171502579
 
 Tapleys Hill Road/Old Port Road, QUEENSTOWN
 I/Section
+Longitude: 138.51179587320678
+Latitude: -34.86533630577355
 
 Montague Rd/Walkleys Rd, INGLE FARM
 I/Section
+Longitude: 138.635023045215
+Latitude: -34.824357184938
 
 Port Wakefield Road/Globe Derby Drive, GLOBE DERBY PARK
 I/Section
+Longitude: 138.596456189283
+Latitude: -34.80018436225
 
 Stephen Terrace, WALKERVILLE
 PAC
+Longitude: 138.613901319146
+Latitude: -34.896637043025
 
 Marion Road, ASCOT PARK
 PAC
+Longitude: 138.556733778375
+Latitude: -34.989031879033
 
 Beach Road, MORPHETT VALE
 PAC
+Longitude: 138.507756394305
+Latitude: -35.137409743217
 
 Ascot Avenue, VALE PARK
 PAC
+Longitude: 138.625909063667
+Latitude: -34.886090046946
 
 Goodwood Road, PASADENA
 PAC
+Longitude: 138.593211563533
+Latitude: -34.999232485727
 
 Kensington Road, Kensington
 PAC
+Longitude: 138.645851396712
+Latitude: -34.926690268181
 
 Port Wakefield Highway, TWO WELLS
 P2P
+Longitude: 138.494339857825
+Latitude: -34.581355793947
 
 Port Wakefield Highway, PORT WAKEFIELD
 P2P
+Longitude: 138.153740824069
+Latitude: -34.184240274932
 
 Port Wakefield Highway, TWO WELLS TO PORT WAKEFIELD
 P2P
+Longitude: 138.188755818731
+Latitude: -34.215204191494
 
 Port Wakefield Highway, PORT WAKEFIELD
 P2P
+Longitude: 138.153740824069
+Latitude: -34.184240274932
 
 Port Wakefield Highway, TWO WELLS
 P2P
+Longitude: 138.494339857825
+Latitude: -34.581355793947
 
 Port Wakefield Highway, PORT WAKEFIELD TO TWO WELLS
 P2P
+Longitude: 138.153740824069
+Latitude: -34.184240274932
 
 Dukes Highway, KI KI
 P2P
+Longitude: 139.797207995241
+Latitude: -35.573220307339
 
 Dukes Highway, COONALPYN
 P2P
+Longitude: 139.856042802872
+Latitude: -35.694933677217
 
 Dukes Highway, KI KI TO COONALPYN
 P2P
+Longitude: 139.856042802872
+Latitude: -35.694933677217
 
 Dukes Highway COONALPYN
 P2P
+Longitude: 139.856042802872
+Latitude: -35.694933677217
 
 Dukes Highway, KI KI
 P2P
+Longitude: 139.797207995241
+Latitude: -35.573220307339
 
 Dukes Highway COONALPYN TO KI KI
 P2P
+Longitude: 139.856042802872
+Latitude: -35.694933677217
 
 Victor Harbor Road, MCLAREN VALE
 P2P
+Longitude: 138.501305311795
+Latitude: -35.192433994748
 
 Victor Harbor Road, WILLUNGA
 P2P
+Longitude: 138.570172601728
+Latitude: -35.286274554568
 
 Victor Harbor Road, MCLAREN VALE TO WILLUNGA
 P2P
+Longitude: 138.501305311795
+Latitude: -35.192433994748
 
 Victor Harbor Road, WHITES VALLEY
 P2P
+Longitude: 138.535684721114
+Latitude: -35.266677950819
 
 Victor Harbor Road, TATACHILLA
 P2P
+Longitude: 138.526204487359
+Latitude: -35.246679327526
 
 Victor Harbor Road, WHITES VALLEY TO TATACHILLA
 P2P
+Longitude: 138.535684721114
+Latitude: -35.266677950819
 
 South Eastern Freeway, NAIRNE
 P2P
+Longitude: 138.927235343943
+Latitude: -35.057791841069
 
 South Eastern Freeway, CALLINGTON
 P2P
+Longitude: 139.017341904701
+Latitude: -35.120007513663
 
 South Eastern Freeway, NAIRNE TO CALLINGTON
 P2P
+Longitude: 139.017341904701
+Latitude: -35.120007513663
 
 South Eastern Freeway, CALLINGTON
 P2P
+Longitude: 139.017341904701
+Latitude: -35.120007513663
 
 South Eastern Freeway, MOUNT BARKER SUMMIT
 P2P
+Longitude: 138.945282678894
+Latitude: -35.07148630901
 
 South Eastern Freeway, CALLINGTON TO MOUNT BARKER SUMMIT
 P2P
+Longitude: 139.017341904701
+Latitude: -35.120007513663
 
 Sturt Highway, LOWBANK
 P2P
+Longitude: 140.072181792702
+Latitude: -34.192186070793
 
 Sturt Highway, WIGLEY FLAT
 P2P
+Longitude: 140.238290251117
+Latitude: -34.188602034356
 
 Sturt Highway, LOWBANK TO WIGLEY FLAT
 P2P
+Longitude: 140.238290251117
+Latitude: -34.188602034356
 
 Sturt Highway, WOOLPUNDA
 P2P
+Longitude: 140.238290251117
+Latitude: -34.188602034356
 
 Sturt Highway, KANNI
 P2P
+Longitude: 140.072181792702
+Latitude: -34.192186070793
 
 Sturt Highway, WOOLPUNDA TO KANNI
 P2P
+Longitude: 140.072181792702
+Latitude: -34.192186070793
 
 Northern Expressway, VIRGINIA
 P2P
+Longitude: 138.578437068169
+Latitude: -34.697710727697
 
 Northern Expressway, WARD BELT
 P2P
+Longitude: 138.704323724174
+Latitude: -34.603396335958
 
 Northern Expressway, VIRGINIA TO WARD BELT
 P2P
+Longitude: 138.704323724174
+Latitude: -34.603396335958
 
 Northern Expressway, BUCHFELDE
 P2P
+Longitude: 138.680438217093
+Latitude: -34.615719206452
 
 Northern Expressway, WATERLOO CORNER
 P2P
+Longitude: 138.574000465557
+Latitude: -34.707467355289
 
 Northern Expressway, BUCHFELDE TO WATERLOO CORNER
 P2P
+Longitude: 138.574000465557
+Latitude: -34.707467355289
 
 South Eastern Freeway, LEAWOOD GARDENS
 Mid Block
+Longitude: 138.66381580187
+Latitude: -34.968290845611
 
 South Eastern Freeway, LEAWOOD GARDENS
 Mid Block
+Longitude: 138.66381580187
+Latitude: -34.968290845611
 
 South Eastern  Freeway, LEAWOOD GARDENS
 Mid Block
+Longitude: 138.66381580187
+Latitude: -34.968290845611
 
 North South Motorway, Regency Park
 MPDC
+Longitude: 138.57142079555
+Latitude: -34.875073814706
 
 Southern Expressway, Darlington
 MPDC
+Longitude: 138.555118081454
+Latitude: -35.030294134887
 
 Port Road, Hindmarsh
 MPDC
+Longitude: 138.571512782103
+Latitude: -34.905197646652
 
 South Road, Torrensville
 MPDC
-
+Longitude: 138.564414906676
+Latitude: -34.91184540343
 
 Port Wakefield Road, Gepps Cross
 MPDC
+Longitude: 138.599546378513
+Latitude: -34.838954643477
 
 Decommissioned cameras
 
-
 Main North Road/Yorketown Road M/S, ELIZABETH PARK
 I/Section
+Longitude: 138.673300523624
+Latitude: -34.7196996071
 
 Glover Avenue, ADELAIDE
 Mid Block
+Longitude: 138.583467427851
+Latitude: -34.924038855666
 
 North Terrace/Frome Road, ADELAIDE 
 I/Section
+Longitude: 138.613437589396
+Latitude: -34.920428008934
 
 Torrens Road/South Road, RENOWN PARK 
 I/Section
+Longitude: 138.579424693213
+Latitude: -34.894039175396
 
 South Road/Torrens Road, RENOWN PARK 
 I/Section
+Longitude: 138.579424693213
+Latitude: -34.894039175396
 
 South Eastern Freeway, LEAWOOD GARDENS
 Mid Block
+Longitude: 138.66381580187
+Latitude: -34.968290845611
 
 Magill Road/Glynburn Road, HECTORVILLE
 I/Section
+Longitude: 138.656988543764
+Latitude: -34.895284280598
