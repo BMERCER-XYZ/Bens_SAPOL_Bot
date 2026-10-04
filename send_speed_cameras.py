@@ -22,6 +22,7 @@ tz = pytz.timezone("Australia/Adelaide")
 ADELAIDE_CBD_COORDS = (-34.9285, 138.6007)
 GREETING_TEMPLATE = "Good morning! :) Here are the speed camera locations for {today}:"
 SA_BOUNDS = ((-38.2, 129.0), (-25.9, 141.5))
+CAMERA_RETENTION_DAYS = 5
 
 
 def _adelaide_today() -> str:
@@ -129,6 +130,15 @@ def _fetch_camera_names_by_date() -> Dict[str, List[str]]:
     return cams_by_date
 
 
+def _apply_retention_window(schedule: Dict[str, List[Dict[str, Any]]], retention_days: int = CAMERA_RETENTION_DAYS) -> Dict[str, List[Dict[str, Any]]]:
+    cutoff_date = datetime.datetime.now(tz).date() - datetime.timedelta(days=retention_days - 1)
+    return {
+        date: cameras
+        for date, cameras in schedule.items()
+        if datetime.date.fromisoformat(date) >= cutoff_date
+    }
+
+
 def _geocode_names(names: List[str]) -> List[Dict[str, Any]]:
     geolocator = Nominatim(user_agent="sapol_bot")
     results = []
@@ -202,7 +212,8 @@ def _geocode_names(names: List[str]) -> List[Dict[str, Any]]:
 
 def get_camera_schedule() -> Dict[str, List[Dict[str, Any]]]:
     names_by_date = _fetch_camera_names_by_date()
-    return {date: _geocode_names(names) for date, names in names_by_date.items()}
+    schedule = {date: _geocode_names(names) for date, names in names_by_date.items()}
+    return _apply_retention_window(schedule)
 
 
 def _select_schedule_date(schedule: Dict[str, List[Dict[str, Any]]]) -> Optional[str]:
