@@ -19,6 +19,17 @@ const typeLabels = {
 
 const map = L.map("map", { zoomControl: true, preferCanvas: true }).setView([-34.9285, 138.6007], 11);
 
+function adelaideTodayIso() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Australia/Adelaide",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 function tileUrl(theme) {
   const variant = theme === "dark" ? "dark_all" : "light_all";
   return `https://{s}.basemaps.cartocdn.com/${variant}/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(state.data.tile_key)}`;
@@ -123,7 +134,7 @@ function moveDate(offset) {
 function initialise(data) {
   state.data = data;
   const dates = Object.keys(data.dates).sort();
-  state.date = dates.find(date => date >= new Date().toISOString().slice(0, 10)) || dates[dates.length - 1];
+  state.date = dates.find(date => date >= adelaideTodayIso()) || dates[dates.length - 1];
   const select = document.getElementById("date-select");
   select.innerHTML = dates.map(date => `<option value="${date}">${new Date(`${date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}</option>`).join("");
   select.value = state.date;
