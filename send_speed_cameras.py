@@ -90,12 +90,31 @@ def generate_map_image(cameras: List[Dict[str, Any]]) -> Optional[str]:
 
 
 def _normalise_date(value: str) -> Optional[str]:
-    for fmt in ("%d/%m/%Y", "%Y-%m-%d", "%d %B %Y", "%d %b %Y"):
+    cleaned = re.sub(r"\b(\d{1,2})(st|nd|rd|th)\b", r"\1", value.strip(), flags=re.IGNORECASE)
+    cleaned = re.sub(r"^[A-Za-z]+,\s*", "", cleaned)
+    for fmt in (
+        "%d/%m/%Y",
+        "%Y-%m-%d",
+        "%d %B %Y",
+        "%d %b %Y",
+        "%A %d %B %Y",
+        "%a %d %B %Y",
+        "%A %d %b %Y",
+        "%a %d %b %Y",
+    ):
         try:
-            return datetime.datetime.strptime(value.strip(), fmt).strftime("%Y-%m-%d")
+            return datetime.datetime.strptime(cleaned, fmt).strftime("%Y-%m-%d")
         except ValueError:
             pass
     return None
+
+
+def _nearest_section_date(tag: Any, fallback_date: str) -> str:
+    for previous in tag.find_all_previous(["h1", "h2", "h3", "h4", "h5", "h6", "p", "strong", "b"]):
+        parsed = _normalise_date(previous.get_text(" ", strip=True))
+        if parsed:
+            return parsed
+    return fallback_date
 
 
 def _fetch_camera_names_by_date() -> Dict[str, List[str]]:
@@ -123,10 +142,12 @@ def _fetch_camera_names_by_date() -> Dict[str, List[str]]:
         encoded_content = item.findtext(content_namespace, default="")
         if not date_value or not encoded_content:
             continue
-        for li in BeautifulSoup(encoded_content, "html.parser").find_all("li"):
+        soup = BeautifulSoup(encoded_content, "html.parser")
+        for li in soup.find_all("li"):
             name = re.sub(r"\s*\([^)]*\)\s*$", "", li.get_text(" ", strip=True)).strip()
             if name:
-                cams_by_date.setdefault(date_value, []).append(name)
+                entry_date = _nearest_section_date(li, date_value)
+                cams_by_date.setdefault(entry_date, []).append(name)
     return cams_by_date
 
 
